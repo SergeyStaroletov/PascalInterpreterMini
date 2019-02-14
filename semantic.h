@@ -3,7 +3,8 @@
 
 #include "defs.h"
 
-extern int pos;
+extern int currentPos;
+
 struct NodeData {
   Tobj t;        //тип
   Tlex id;       //идентефикатор

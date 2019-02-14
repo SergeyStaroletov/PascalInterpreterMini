@@ -5,11 +5,11 @@
 #include "scaner.h"
 #include "semantic.h"
 
-int pos = 0;
+int currentPos = 0;
 char isInterpretation;
 
 void syntax() {
-  pos = 1;
+  currentPos = 1;
   isInterpretation = 1;
   stackInit(32768);
   S();
@@ -30,7 +30,7 @@ void printBug(char *data, char *lex) {
     strcat(s, "' в строке ");
   }
 
-  printf("%s %d\n", s, pos);
+  printf("%s %d\n", s, currentPos);
   fflush(stdout);
 
   delete[] s;

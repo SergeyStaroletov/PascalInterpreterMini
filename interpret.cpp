@@ -15,9 +15,10 @@ void stackInit(int max) {
   stack2 = new int *[max];
   sp = -1;
   sp2 = -1;
-};
-int pop() { return stack[sp--]; };
-int *pop2() { return stack2[sp--]; };
+}
+
+int pop() { return stack[sp--]; }
+int *pop2() { return stack2[sp--]; }
 
 bool push(int i) {
   if (sp >= d_max) {
@@ -26,19 +27,19 @@ bool push(int i) {
   };
   stack[++sp] = i;
   return true;
-};
+}
 
 bool push2(int *i) {
   if (sp >= d_max) {
     printf("\nInternal stack overflow!\n");
     exit(1);
-  };
+  }
   stack2[++sp] = i;
   return true;
-};
+}
 
 //занести в структуру позицию тела функции в исх. тексте
-void IntSaveFuncPosition(int uk, Tree *n) { n->data.pos = uk; };
+void IntSaveFuncPosition(int uk, Tree *n) { n->data.pos = uk; }
 
 int IntGetPositionOfFunctionText(Tlex l)  //получить указатель на текст функции
 {
@@ -47,7 +48,7 @@ int IntGetPositionOfFunctionText(Tlex l)  //получить указатель на текст функции
   Sem5CheckToFun(l, &n);
   int ret = n->data.pos;
   return ret;
-};
+}
 
 void IntStoreParamToStack(Tree *n, int k, int *znach,
                           int *&addr)  //поместить парам. в стек
@@ -67,8 +68,8 @@ void IntStoreParamToStack(Tree *n, int k, int *znach,
   } else {
     push(*t->data.value);
     *t->data.value = *znach;
-  };
-};
+  }
+}
 
 Tree *IntRunFunction(
     Tree *n) {  //обеспечить работу функции (текущую верш. в дереве)
@@ -81,7 +82,7 @@ Tree *IntRunFunction(
   Tree *nn = getNode();
   setNode(tt);
   return nn;
-};
+}
 
 void IntPopParamFromStack(Tree *n, int k) {  //извлечь парам. из стека
   int kk = 0;
@@ -105,14 +106,14 @@ void IntPopParamFromStack(Tree *n, int k) {  //извлечь парам. из стека
       else
         *t->data.value = pop();
       t = t->p;
-    };
-  };
-};
+    }
+  }
+}
 
 int IntGetFunctionReturn(Tree *n) {  //получить значение функции
   int ret = *(n->data.value);
   return ret;
-};
+}
 
 int IntCalcOperationResult(
     int type1, int type2, int value1, int value2,
@@ -160,8 +161,8 @@ int IntCalcOperationResult(
       case Tnonequ:
         ret = (value1 != value2);
         break;
-    };
-  };
+    }
+  }
 
   if (type1 == typeBool && type2 == typeBool) {
     switch (oper) {
@@ -192,10 +193,10 @@ int IntCalcOperationResult(
       case Tnonequ:
         ret = (value1 != value2);
         break;
-    };
-  };
+    }
+  }
   return ret;
-};
+}
 
 void IntAssignValueOrAddrToVar(int T1, int T2, Tlex lex, int *z,
                                int *&addr) {  //присвоить перем. значение
@@ -218,18 +219,18 @@ void IntAssignValueOrAddrToVar(int T1, int T2, Tlex lex, int *z,
               return;
             } else {
               break;
-            };
+            }
           }
-    };
-  };
+    }
+  }
 
   if (myd->type_param == parameterVar) {
     // myd->value=addr ;
     *myd->value = *z;
   } else
     *myd->value = *z;
-};
+}
 
-  //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 #pragma package(smart_init)

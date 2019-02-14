@@ -6,6 +6,6 @@ void putLinePtr(int);
 int getLinePtr();
 int scanerNextToken(Tlex);
 void getData(char *);
-extern int pos;
+extern int currentPos;
 
 #endif

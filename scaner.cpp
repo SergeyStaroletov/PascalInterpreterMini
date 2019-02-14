@@ -1,44 +1,44 @@
 #include "scaner.h"
 #include "defs.h"
 
-int uk = 0;
-int save_pos = 0;
+int posPointer = 0;
+int savePos = 0;
 
-Ttext t;
+Ttext sourceText;
+
 int getLinePtr(void) {
-  save_pos = pos;
-  return uk;
+  savePos = currentPos;
+  return posPointer;
 }
+
 void putLinePtr(int p) {
-  uk = p;
-  pos = save_pos;
+  posPointer = p;
+  currentPos = savePos;
   return;
 }
 
 void getData(char *name) {
-  for (int j = 0; j < MAXTEXT; j++) t[j] = 0;
-  // strcpy(t,"") ;
+  for (int j = 0; j < MAXTEXT; j++) sourceText[j] = 0;
   FILE *f = fopen(name, "rb");
   if (!f) {
     printf("Error: %s not a falid file.", name);
     fflush(stdout);
     exit(1);
   };
-  fread(t, sizeof(char), MAXTEXT - 2, f);
+  fread(sourceText, sizeof(char), MAXTEXT - 2, f);
 
-  // fgets(t,MAXTEXT,f) ;
   fclose(f);
-};
+}
 
-void printerror(char *lex){
-    // printf("[error!] in %s\n",lex);
-};
+void printerror(char *lex) {
+  // printf("[error!] in %s\n",lex);
+}
 
 void printCommentError(int i) {
-  printf("Non ending comment! in line %d\n", pos);
+  printf("Non ending comment! in line %d\n", currentPos);
   fflush(stdout);
   exit(1);
-};
+}
 
 //\/\/\/\\/\/\/\/\/\\/\/\/\/\/\\/\/\/\/\/\/\/\/\\/\/\/\/\\/\/\\/\\/\/\/\/\\/\/\/\/\/
 
@@ -58,74 +58,75 @@ int scanerNextToken(Tlex l) {
 start:
   iscomment = false;
   //пропуск незначащих символов
-  while (t[uk] == ' ' || t[uk] == '\n' || t[uk] == '\r' || t[uk] == 9) {
-    if (t[uk] == '\n') pos++;
-    uk++;
-    if (t[uk] == '\0') return -1;
-  };
+  while (sourceText[posPointer] == ' ' || sourceText[posPointer] == '\n' ||
+         sourceText[posPointer] == '\r' || sourceText[posPointer] == 9) {
+    if (sourceText[posPointer] == '\n') currentPos++;
+    posPointer++;
+    if (sourceText[posPointer] == '\0') return -1;
+  }
 
   //пропуск комментариев
 
 k0:
-  if (t[uk] == '{') {
-    uk++;
+  if (sourceText[posPointer] == '{') {
+    posPointer++;
     goto k1;
-  } else if (t[uk] == '(') {
-    uk++;
+  } else if (sourceText[posPointer] == '(') {
+    posPointer++;
     goto k2;
   } else {
     goto k_fin;
-  };
+  }
 k1:
-  if (t[uk] == '\0') {
-    printCommentError(uk);
+  if (sourceText[posPointer] == '\0') {
+    printCommentError(posPointer);
     return -1;
-  } else if (t[uk] != '}') {
-    if (t[uk] == '\n') pos++;
-    uk++;
+  } else if (sourceText[posPointer] != '}') {
+    if (sourceText[posPointer] == '\n') currentPos++;
+    posPointer++;
     goto k1;
   } else {
-    uk++;
+    posPointer++;
     iscomment = true;
     goto k_fin;
-  };
+  }
 k2:
-  if (t[uk] == '\0') {
-    printCommentError(uk);
+  if (sourceText[posPointer] == '\0') {
+    printCommentError(posPointer);
     return -1;
-  } else if (t[uk] == '*') {
-    uk++;
+  } else if (sourceText[posPointer] == '*') {
+    posPointer++;
     goto k3;
   } else {
     //символ ( , а потом нет * - это не коментарий
-    uk--;
+    posPointer--;
     goto k_fin;
-  };
+  }
 k3:
-  if (t[uk] == '\0') {
-    printCommentError(uk);
+  if (sourceText[posPointer] == '\0') {
+    printCommentError(posPointer);
     return -1;
-  } else if (t[uk] != '*') {
-    if (t[uk] == '\n') pos++;
-    uk++;
+  } else if (sourceText[posPointer] != '*') {
+    if (sourceText[posPointer] == '\n') currentPos++;
+    posPointer++;
     goto k3;
   } else {
-    uk++;
+    posPointer++;
     goto k4;
-  };
+  }
 k4:
-  if (t[uk] == '\0') {
-    printCommentError(uk);
+  if (sourceText[posPointer] == '\0') {
+    printCommentError(posPointer);
     return -1;
-  } else if (t[uk] == ')') {
-    uk++;
+  } else if (sourceText[posPointer] == ')') {
+    posPointer++;
     iscomment = true;
     goto k_fin;
   } else {
-    if (t[uk] == '\n') pos++;
-    uk++;
+    if (sourceText[posPointer] == '\n') currentPos++;
+    posPointer++;
     goto k3;
-  };
+  }
 k_fin:
   if (iscomment) goto start;
   //разбор
@@ -133,21 +134,22 @@ k_fin:
   //сначала эти как их  идентицфикаторы
 
 id_0:
-  if (t[uk] == 0) return -1;
-  if (isalpha(t[uk]) || t[uk] == '_') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == 0) return -1;
+  if (isalpha(sourceText[posPointer]) || sourceText[posPointer] == '_') {
+    l[i++] = sourceText[posPointer++];
   id_1:
-    if (isalnum(t[uk]) || t[uk] == '_') {
-      l[i++] = t[uk++];
+    if (isalnum(sourceText[posPointer]) || sourceText[posPointer] == '_') {
+      l[i++] = sourceText[posPointer++];
       if (i < MAXLEX - 1)
         goto id_1;
       else {
         //слишком длинный
         // printerror(l) ; return Tnone ;
-        while (isalnum(t[uk]) || t[uk] == '_') uk++;
+        while (isalnum(sourceText[posPointer]) || sourceText[posPointer] == '_')
+          posPointer++;
 
         return Tid;
-      };
+      }
     } else {
       //закончить идент
 
@@ -156,115 +158,118 @@ id_0:
         if (!strcmp(sign[kl], l)) return tip[kl];
 
       return Tid;
-    };
-  };
+    }
+  }
 //цифра
 num_0:
-  if ((isalnum(t[uk])) && (!isalpha(t[uk]))) {
-    l[i++] = t[uk++];
+  if ((isalnum(sourceText[posPointer])) && (!isalpha(sourceText[posPointer]))) {
+    l[i++] = sourceText[posPointer++];
   num_1:
-    if ((isalnum(t[uk])) && (!isalpha(t[uk]))) {
-      l[i++] = t[uk++];
+    if ((isalnum(sourceText[posPointer])) &&
+        (!isalpha(sourceText[posPointer]))) {
+      l[i++] = sourceText[posPointer++];
       if (i < MAXLEX - 1)
         goto num_1;
       else {  //длинная цифра
-        while ((isalnum(t[uk])) && (!isalpha(t[uk]))) uk++;
+        while ((isalnum(sourceText[posPointer])) &&
+               (!isalpha(sourceText[posPointer])))
+          posPointer++;
         return Tnumber;
       };
     } else {
       //вернуть цифру
       return Tnumber;
-    };
-  };
+    }
+  }
   //присвоить и двоеточие
-  if (t[uk] == ':') {
-    l[i++] = t[uk++];
-    if (t[uk] == '=') {
-      l[i++] = t[uk++];
+  if (sourceText[posPointer] == ':') {
+    l[i++] = sourceText[posPointer++];
+    if (sourceText[posPointer] == '=') {
+      l[i++] = sourceText[posPointer++];
       return Tassign;
     } else {
       return Tdv;
-    };
-  };
+    }
+  }
   //точка с запятой
-  if (t[uk] == ';') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == ';') {
+    l[i++] = sourceText[posPointer++];
     return Ttz;
-  };
+  }
   //двоеточие
-  if (t[uk] == ':') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == ':') {
+    l[i++] = sourceText[posPointer++];
     return Tdv;
-  };
+  }
   //  (
-  if (t[uk] == '(') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == '(') {
+    l[i++] = sourceText[posPointer++];
     return Tos;
-  };
+  }
   //  )
-  if (t[uk] == ')') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == ')') {
+    l[i++] = sourceText[posPointer++];
     return Tzs;
-  };
+  }
   //+
-  if (t[uk] == '+') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == '+') {
+    l[i++] = sourceText[posPointer++];
     return Tplus;
-  };
+  }
   //-
-  if (t[uk] == '-') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == '-') {
+    l[i++] = sourceText[posPointer++];
     return Tminus;
-  };
+  }
   //умножить
-  if (t[uk] == '*') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == '*') {
+    l[i++] = sourceText[posPointer++];
     return Tmult;
-  };
+  }
 
   //точка
-  if (t[uk] == '.') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == '.') {
+    l[i++] = sourceText[posPointer++];
     return Tpoint;
-  };
+  }
   //равно
-  if (t[uk] == '=') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == '=') {
+    l[i++] = sourceText[posPointer++];
     return Tequ;
-  };
+  }
 
   //запятая
-  if (t[uk] == ',') {
-    l[i++] = t[uk++];
+  if (sourceText[posPointer] == ',') {
+    l[i++] = sourceText[posPointer++];
     return Tpause;
-  };
+  }
 
   //Меньше и меньше или равно или неравно
-  if (t[uk] == '<') {
-    l[i++] = t[uk++];
-    if (t[uk] == '=') {
-      l[i++] = t[uk++];
+  if (sourceText[posPointer] == '<') {
+    l[i++] = sourceText[posPointer++];
+    if (sourceText[posPointer] == '=') {
+      l[i++] = sourceText[posPointer++];
       return Tmenequ;
-    } else if (t[uk] == '>') {
-      l[i++] = t[uk++];
+    } else if (sourceText[posPointer] == '>') {
+      l[i++] = sourceText[posPointer++];
       return Tnonequ;
     } else
 
       return Tmenee;
-  };
+  }
   //Больше и больше или равно
-  if (t[uk] == '>') {
-    l[i++] = t[uk++];
-    if (t[uk] == '=') {
-      l[i++] = t[uk++];
+  if (sourceText[posPointer] == '>') {
+    l[i++] = sourceText[posPointer++];
+    if (sourceText[posPointer] == '=') {
+      l[i++] = sourceText[posPointer++];
       return Tbolequ;
     } else
       return Tbolee;
-  };
+  }
   //конец файла
-  if (t[uk] == 0) return -1;
+  if (sourceText[posPointer] == 0) return -1;
   //ничто
-  l[i++] = t[uk++];
+  l[i++] = sourceText[posPointer++];
   printerror(l);
   return 0;
-};
+}

@@ -15,13 +15,13 @@ void semPrint(char *data, char *lex) {
   strcpy(s, data);
   strcat(s, " в строке %d !");
   // CharToOem(s, s1);
-  printf(s, lex, pos);
+  printf(s, lex, currentPos);
   fflush(stdout);
   delete[] s;
   delete[] s1;
   // getch() ;
   exit(1);
-};
+}
 
 void SetLeft(NodeData new_data)
 //создать левого потомка от текущей вершины
@@ -40,7 +40,7 @@ void SetLeft(NodeData new_data)
   mynode->p = a;
   memcpy(&mynode->data, &new_data, sizeof(NodeData));
   return;
-};
+}
 
 void SetRight(NodeData new_data) {
   Tree *a;
@@ -51,13 +51,13 @@ void SetRight(NodeData new_data) {
   } else {
     mynode->rp = new Tree;
     mynode = mynode->rp;
-  };
+  }
   mynode->lp = NULL;
   mynode->rp = NULL;
   mynode->p = a;
   memcpy(&mynode->data, &new_data, sizeof(NodeData));
   return;
-};
+}
 
 NodeData *FindUpFun(Tlex l)
 //найти идентефикатор в таблице , двигаясь вверх и останавливаясь до первой
@@ -79,11 +79,11 @@ NodeData *FindUpFun(Tlex l)
         if (tp == tmp->rp) {
           if (!strcmp(tmp->data.id, l)) return &tmp->data;
           break;
-        };
+        }
 
-  };  // wh
+  }  // wh
   return NULL;
-};
+}
 
 NodeData *FindUp(Tlex l)
 //найти идентефикатор в таблице , двигаясь вверх
@@ -99,7 +99,7 @@ NodeData *FindUp(Tlex l)
     tmp = tmp->p;
   };  // wh
   return NULL;
-};
+}
 
 int a() {
   NodeData new_data;
@@ -121,7 +121,7 @@ int a() {
   myd = FindUp("myid");
 
   // int c=2+3 ;
-};
+}
 
 Tree *Sem13() { return mynode; }
 
@@ -135,19 +135,19 @@ void Sem14AddIdWithoutAType(Tlex name) {
   if (myd != NULL) {
     //уже есть !
     semPrint("Повторный идентефикатор '%s'", name);
-  };
+  }
   new_data.t = typeVar;
   new_data.dataType = typeNone;
   strcpy(new_data.id, name);
   SetLeft(new_data);
-};
+}
 
 //определить семантический тип по лексическому
 int SemReturnSemTypeByLexType(int t) {
   if (t == Tint) return typeInt;
   if (t == Tbool) return typeBool;
   return typeNone;
-};
+}
 
 //изменить тип typenone на нужный тип, поднимаясь вверх по дереву
 void Sem15ChangeToType(Tree *n, int tt) {
@@ -162,8 +162,8 @@ void Sem15ChangeToType(Tree *n, int tt) {
     //и присвоить значение
     *tmp->data.value = 0;
     tmp = tmp->p;
-  };
-};
+  }
+}
 
 //занести в таблицу константу без типа
 void Sem14InsertConstant(Tlex name) {
@@ -179,7 +179,7 @@ void Sem14InsertConstant(Tlex name) {
   new_data.dataType = typeNone;
   strcpy(new_data.id, name);
   SetLeft(new_data);
-};
+}
 
 void Sem15c(Tlex l, bool flag_minus) {
   int z;
@@ -200,21 +200,21 @@ void Sem15c(Tlex l, bool flag_minus) {
     int ofs = 19 - strlen(l);
     for (int j = 0; j < strlen(l); j++) {
       s[ofs + j] = l[j];
-    };
+    }
     if (strcmp(s, "0000000002147483647") > 0) {
       semPrint("Слишком большая числовая константа - %s", l);
       tip = typeNone;
-    };
+    }
     z = atoi(l);
 
     if (flag_minus) z = -z;
     tip = typeInt;
-  };
+  }
   //теперь занести
   mynode->data.dataType = tip;
   mynode->data.znach = z;
   mynode->data.value = &(mynode->data.znach);
-};
+}
 
 //фунции
 Tree *Sem16AddChildFunction(Tlex l) {
@@ -228,7 +228,7 @@ Tree *Sem16AddChildFunction(Tlex l) {
   if (myd != NULL) {
     //уже есть !
     semPrint("Повторный идентификатор '%s'", l);
-  };
+  }
   new_data.t = typeFunc;
   new_data.dataType = typeNone;
   new_data.param = 0;
@@ -242,10 +242,10 @@ Tree *Sem16AddChildFunction(Tlex l) {
   strcpy(new_data.id, "");
   SetRight(new_data);
   return u;
-};
+}
 
 //изменить номер параметров у функции
-void Sem17ChangeNParamFun(Tree *k) { k->data.param++; };
+void Sem17ChangeNParamFun(Tree *k) { k->data.param++; }
 
 //добавить параметр в функцию
 void Sem14AddParamFun(Tlex name, bool fr, bool var) {
@@ -257,7 +257,7 @@ void Sem14AddParamFun(Tlex name, bool fr, bool var) {
   if (myd != NULL) {
     //уже есть !
     semPrint("Повторный идентефикатор '%s'", name);
-  };
+  }
 
   new_data.t = typeParam;
   new_data.dataType = typeNone;
@@ -272,16 +272,16 @@ void Sem14AddParamFun(Tlex name, bool fr, bool var) {
     memcpy(&mynode->data, &new_data, sizeof(NodeData));
   } else  //иначе - влево
     SetLeft(new_data);
-};
+}
 
 //изменить неопред. тип функции
 void Sem15ChangeUndefinedTypeFun(Tree *n, int tt) {
   n->data.dataType = tt;
   n->data.value = new int;
   *(n->data.value) = 0;
-};
+}
 
-void Sem18(Tree *k) { mynode = k; };
+void Sem18(Tree *k) { mynode = k; }
 
 int Sem1CheckVar(Tlex l, bool *var, int *znach, int *&address) {
   NodeData *myd = FindUp(l);
@@ -289,7 +289,7 @@ int Sem1CheckVar(Tlex l, bool *var, int *znach, int *&address) {
   {
     semPrint("Идентефикатор %s не описан, ", l);
     return typeNone;
-  };
+  }
   if (myd->t == typeFunc) semPrint("Неверный идентификатор '%s'", l);
   if (myd->t == typeVar || myd->t == typeParam)
     *var = true;
@@ -301,7 +301,7 @@ int Sem1CheckVar(Tlex l, bool *var, int *znach, int *&address) {
   address = myd->value;
 
   return myd->dataType;
-};
+}
 
 int Sem2CheckNumber(Tlex l, int *znach) {
   // 2147483647
@@ -311,18 +311,18 @@ int Sem2CheckNumber(Tlex l, int *znach) {
     if (l[0] == 'f') *znach = 0;
 
     return typeBool;
-  };
+  }
   char s[40];
   strcpy(s, "0000000000000000000");
   int ofs = 19 - strlen(l);
   for (int j = 0; j < strlen(l); j++) {
     s[ofs + j] = l[j];
-  };
+  }
   if (strcmp(s, "0000000002147483647") > 0) {
     semPrint("Слишком большая числовая константа - %s", l);
     *znach = 0;
     return typeNone;
-  };
+  }
 
   *znach = atoi(l);
 
@@ -342,7 +342,7 @@ int Sem2CheckNumber(Tlex l, int *znach) {
   */
 
   return typeInt;
-};
+}
 
 //проверить на функцию
 int Sem5CheckToFun(Tlex l, Tree **n) {
@@ -351,12 +351,12 @@ int Sem5CheckToFun(Tlex l, Tree **n) {
   {
     semPrint("Идентефикатор '%s' не описан, ", l);
     return typeNone;
-  };
+  }
 
   if (myd->t != typeFunc) {
     semPrint("Идентефикатор '%s' не является именем функции, ", l);
     return typeNone;
-  };
+  }
 
   Tree *tmp;
   *n = NULL;
@@ -371,10 +371,10 @@ int Sem5CheckToFun(Tlex l, Tree **n) {
       break;
     };
     tmp = tmp->p;
-  };  // wh
+  }  // wh
 
   return myd->dataType;
-};
+}
 
 //проверить тип параметра с номером k в функции * n на тип t
 void Sem6CheckKthParamFunc(int t, Tree *n, int k, bool var) {
@@ -393,14 +393,14 @@ void Sem6CheckKthParamFunc(int t, Tree *n, int k, bool var) {
   if (tmp->data.type_param == parameterVar)
     if (!var)
       semPrint("Параметр var '%s' не может быть выражением", tmp->data.id);
-};
+}
 
 void Sem7CheckFunParamCount(Tree *n, int k) {
   if (n->data.param != k)
     semPrint("Не хватает параметров у функции '%s'", n->data.id);
-};
+}
 
-int Sem71ReturnType(Tree *n) { return n->data.dataType; };
+int Sem71ReturnType(Tree *n) { return n->data.dataType; }
 
 int Sem3CheckTwoTypesApplicable(int t1, int t2, int oper) {
   switch (oper) {
@@ -464,7 +464,7 @@ int Sem31CheckTypeUnary(int t1, int oper) {
     return typeNone;  //никогда не вып.
   }
   return t1;
-};
+}
 
 //***************************************************
 void _printtree(Tree *t) {
@@ -480,8 +480,8 @@ void _printtree(Tree *t) {
     fprintf(ff, " %d %d %d\n", t->p, t->lp, t->rp);
     if (t->lp) _printtree(t->lp);
     if (t->rp) _printtree(t->rp);
-  };
-};
+  }
+}
 
 int Sem9CheckIdAndReturnType(Tlex l) {
   NodeData *myd = FindUp(l);
@@ -489,12 +489,12 @@ int Sem9CheckIdAndReturnType(Tlex l) {
   {
     semPrint("Идентификатор '%s' не описан, ", l);
     return typeNone;
-  };
+  }
 
   if (myd->t != typeVar && myd->t != typeFunc && myd->t != typeParam) {
     semPrint("Идентификатор '%s' не является именем переменной", l);
     return typeNone;
-  };
+  }
   //поиск функции
 
   if (myd->t == typeFunc) {
@@ -514,28 +514,28 @@ int Sem9CheckIdAndReturnType(Tlex l) {
             } else {
               semPrint("Неверный оператор возврата значения '%s'", l);
               break;
-            };
-          };
-    };
-  };
+            }
+          }
+    }
+  }
   return myd->dataType;
-};
+}
 
 void Sem91CheckAssignmentTypes(int T1, int T2) {
   if (T1 != T2) semPrint("Типы данных при присваивании должны совпадать%s", "");
-};
+}
 
 void Sem8CheckTypeWhile(int t) {
   if (t != typeBool) semPrint("Для while нужно выражение типа boolean%s", "");
-};
+}
 
 void printTree() {
   ff = fopen("tree.tree", "w");
   _printtree(root);
   fclose(ff);
-};
+}
 
-void setNode(Tree *node) { mynode = node; };
-Tree *getNode() { return mynode; };
+void setNode(Tree *node) { mynode = node; }
+Tree *getNode() { return mynode; }
 
 //---------------------------------------------------------------------------
