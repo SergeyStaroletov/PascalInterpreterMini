@@ -9,7 +9,7 @@ Supports: integer/boolean types/operations, functions with params, := and while.
 
 It has nice I/O syntax due to the original grammar without strings and procedure calls:)
 
-b:=write(Vvedite a:);
+b:=write(Enter a:);
 
 a:=readln();
 
