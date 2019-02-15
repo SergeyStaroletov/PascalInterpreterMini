@@ -5,21 +5,17 @@
 
 Tree *root;
 
-Tree *mynode;
+Tree *myNode;
 
-FILE *ff;
+FILE *outputFile;
 void semPrint(char *data, char *lex) {
   char *s = new char[200];
-  char *s1 = new char[200];
-
   strcpy(s, data);
   strcat(s, " в строке %d !");
   // CharToOem(s, s1);
   printf(s, lex, currentPos);
   fflush(stdout);
   delete[] s;
-  delete[] s1;
-  // getch() ;
   exit(1);
 }
 
@@ -27,35 +23,35 @@ void SetLeft(NodeData new_data)
 //создать левого потомка от текущей вершины
 {
   Tree *a;
-  a = mynode;
-  if (mynode == NULL) {
-    mynode = new Tree;
-    root = mynode;
+  a = myNode;
+  if (myNode == NULL) {
+    myNode = new Tree;
+    root = myNode;
   } else {
-    mynode->lp = new Tree;
-    mynode = mynode->lp;
-  };
-  mynode->lp = NULL;
-  mynode->rp = NULL;
-  mynode->p = a;
-  memcpy(&mynode->data, &new_data, sizeof(NodeData));
+    myNode->lp = new Tree;
+    myNode = myNode->lp;
+  }
+  myNode->lp = NULL;
+  myNode->rp = NULL;
+  myNode->p = a;
+  memcpy(&myNode->data, &new_data, sizeof(NodeData));
   return;
 }
 
 void SetRight(NodeData new_data) {
   Tree *a;
-  a = mynode;
-  if (mynode == NULL) {
-    mynode = new Tree;
-    root = mynode;
+  a = myNode;
+  if (myNode == NULL) {
+    myNode = new Tree;
+    root = myNode;
   } else {
-    mynode->rp = new Tree;
-    mynode = mynode->rp;
+    myNode->rp = new Tree;
+    myNode = myNode->rp;
   }
-  mynode->lp = NULL;
-  mynode->rp = NULL;
-  mynode->p = a;
-  memcpy(&mynode->data, &new_data, sizeof(NodeData));
+  myNode->lp = NULL;
+  myNode->rp = NULL;
+  myNode->p = a;
+  memcpy(&myNode->data, &new_data, sizeof(NodeData));
   return;
 }
 
@@ -65,13 +61,13 @@ NodeData *FindUpFun(Tlex l)
 {
   Tree *tmp, *tp;
 
-  tmp = mynode;
+  tmp = myNode;
   while (tmp != NULL) {
     if (!strcmp(tmp->data.id, l)) {
       //нашли
       return &tmp->data;
       // break ;
-    };
+    }
     tp = tmp;
     tmp = tmp->p;
     if (tmp != NULL)
@@ -80,7 +76,6 @@ NodeData *FindUpFun(Tlex l)
           if (!strcmp(tmp->data.id, l)) return &tmp->data;
           break;
         }
-
   }  // wh
   return NULL;
 }
@@ -89,15 +84,15 @@ NodeData *FindUp(Tlex l)
 //найти идентефикатор в таблице , двигаясь вверх
 {
   Tree *tmp;
-  tmp = mynode;
+  tmp = myNode;
   while (tmp != NULL) {
     if (!strcmp(tmp->data.id, l)) {
       //нашли
       return &tmp->data;
       // break ;
-    };
+    }
     tmp = tmp->p;
-  };  // wh
+  }  // wh
   return NULL;
 }
 
@@ -119,11 +114,10 @@ int a() {
   NodeData *myd;
 
   myd = FindUp("myid");
-
   // int c=2+3 ;
 }
 
-Tree *Sem13() { return mynode; }
+Tree *Sem13() { return myNode; }
 
 //занести в таблицу без типа
 void Sem14AddIdWithoutAType(Tlex name) {
@@ -153,7 +147,7 @@ int SemReturnSemTypeByLexType(int t) {
 void Sem15ChangeToType(Tree *n, int tt) {
   //   |(n)
   // |
-  Tree *tmp = mynode;
+  Tree *tmp = myNode;
 
   while (tmp != n) {
     tmp->data.dataType = tt;
@@ -174,7 +168,7 @@ void Sem14InsertConstant(Tlex name) {
   if (myd != NULL) {
     //уже есть !
     semPrint("Повторный идентефикатор '%s'", name);
-  };
+  }
   new_data.t = typeConst;
   new_data.dataType = typeNone;
   strcpy(new_data.id, name);
@@ -211,9 +205,9 @@ void Sem15c(Tlex l, bool flag_minus) {
     tip = typeInt;
   }
   //теперь занести
-  mynode->data.dataType = tip;
-  mynode->data.znach = z;
-  mynode->data.value = &(mynode->data.znach);
+  myNode->data.dataType = tip;
+  myNode->data.znach = z;
+  myNode->data.value = &(myNode->data.znach);
 }
 
 //фунции
@@ -234,7 +228,7 @@ Tree *Sem16AddChildFunction(Tlex l) {
   new_data.param = 0;
   strcpy(new_data.id, l);
   SetLeft(new_data);
-  u = mynode;
+  u = myNode;
   //занесли
   //создать пустого правого потомка
   new_data.t = typeNone;
@@ -269,7 +263,7 @@ void Sem14AddParamFun(Tlex name, bool fr, bool var) {
   strcpy(new_data.id, name);
 
   if (fr == true) {  //первый вызов - добавить вправо
-    memcpy(&mynode->data, &new_data, sizeof(NodeData));
+    memcpy(&myNode->data, &new_data, sizeof(NodeData));
   } else  //иначе - влево
     SetLeft(new_data);
 }
@@ -281,7 +275,7 @@ void Sem15ChangeUndefinedTypeFun(Tree *n, int tt) {
   *(n->data.value) = 0;
 }
 
-void Sem18(Tree *k) { mynode = k; }
+void Sem18(Tree *k) { myNode = k; }
 
 int Sem1CheckVar(Tlex l, bool *var, int *znach, int *&address) {
   NodeData *myd = FindUp(l);
@@ -340,7 +334,6 @@ int Sem2CheckNumber(Tlex l, int *znach) {
     *znach = 0;
   };
   */
-
   return typeInt;
 }
 
@@ -363,7 +356,7 @@ int Sem5CheckToFun(Tlex l, Tree **n) {
 
   //найти n
 
-  tmp = mynode;
+  tmp = myNode;
   while (tmp != NULL) {
     if (!strcmp(tmp->data.id, l)) {
       //нашли
@@ -469,15 +462,15 @@ int Sem31CheckTypeUnary(int t1, int oper) {
 //***************************************************
 void _printtree(Tree *t) {
   if (t) {
-    fprintf(ff, "%d %s ", t, t->data.id);
+    fprintf(outputFile, "%d %s ", t, t->data.id);
     if (t->data.t == typeConst)
-      fprintf(ff, "c %d %d", t->data.znach, t->data.dataType);
-    if (t->data.t == typeVar) fprintf(ff, "v %d 0", t->data.dataType);
+      fprintf(outputFile, "c %d %d", t->data.znach, t->data.dataType);
+    if (t->data.t == typeVar) fprintf(outputFile, "v %d 0", t->data.dataType);
     if (t->data.t == typeFunc)
-      fprintf(ff, "f %d %d", t->data.param, t->data.dataType);
+      fprintf(outputFile, "f %d %d", t->data.param, t->data.dataType);
     if (t->data.t == typeParam)
-      fprintf(ff, "p %d %d", t->data.type_param, t->data.dataType);
-    fprintf(ff, " %d %d %d\n", t->p, t->lp, t->rp);
+      fprintf(outputFile, "p %d %d", t->data.type_param, t->data.dataType);
+    fprintf(outputFile, " %d %d %d\n", t->p, t->lp, t->rp);
     if (t->lp) _printtree(t->lp);
     if (t->rp) _printtree(t->rp);
   }
@@ -500,7 +493,7 @@ int Sem9CheckIdAndReturnType(Tlex l) {
   if (myd->t == typeFunc) {
     Tree *tmp, *tp;
 
-    tmp = mynode;
+    tmp = myNode;
     while (tmp != NULL) {
       tp = tmp;
       tmp = tmp->p;
@@ -530,12 +523,12 @@ void Sem8CheckTypeWhile(int t) {
 }
 
 void printTree() {
-  ff = fopen("tree.tree", "w");
+  outputFile = fopen("tree.tree", "w");
   _printtree(root);
-  fclose(ff);
+  fclose(outputFile);
 }
 
-void setNode(Tree *node) { mynode = node; }
-Tree *getNode() { return mynode; }
+void setNode(Tree *node) { myNode = node; }
+Tree *getNode() { return myNode; }
 
 //---------------------------------------------------------------------------

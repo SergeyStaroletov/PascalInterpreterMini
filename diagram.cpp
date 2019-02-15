@@ -91,10 +91,9 @@ int write(bool ln) {
     } else {
       printf("%s", vs);
     }
-    if (ln == true) printf("\n");
+    if (ln) printf("\n");
     fflush(stdout);
   }
-
   return 0;
 }
 
@@ -527,7 +526,7 @@ bool A4(int *i, int *znach, int *&address) {
     } else {
       //вызов ф-ии
       int ukaz;
-      Tree *n;  //указатель в дереве на функцию
+      Tree *funNode;  //указатель в дереве на функцию
 
       int k = 0;  //номер параметра
 
@@ -549,7 +548,7 @@ bool A4(int *i, int *znach, int *&address) {
         return false;
       }
 
-      T = Sem5CheckToFun(l1, &n);
+      T = Sem5CheckToFun(l1, &funNode);
 
       ukaz = IntGetPositionOfFunctionText(
           l1);  //получить указатель на текст функции
@@ -559,28 +558,28 @@ bool A4(int *i, int *znach, int *&address) {
         int *addr;
         bool var = I(&T1, znach, addr);  // T1=1 ;
         k++;
-        Sem6CheckKthParamFunc(T1, n, k, var);
+        Sem6CheckKthParamFunc(T1, funNode, k, var);
         if (isInterpretation)
-          IntStoreParamToStack(n, k, znach, addr);  //помять стек и дерево
+          IntStoreParamToStack(funNode, k, znach, addr);  //помять стек и дерево
         uk1 = getLinePtr();
         t = scanerNextToken(l);
       } while (t == Tpause);
       putLinePtr(uk1);
       t = scanerNextToken(l);
       if (t != Tzs) printBug(")", l);
-      Sem7CheckFunParamCount(n, k);
-      int T1 = Sem71ReturnType(n);
+      Sem7CheckFunParamCount(funNode, k);
+      int T1 = Sem71ReturnType(funNode);
       *i = T1;
       // add-on
       if (isInterpretation) {
         int uk2 = getLinePtr();
         putLinePtr(ukaz);
         // create run-time environment
-        Tree *t = IntRunFunction(n);
-        N();
+        Tree *t = IntRunFunction(funNode);
+        N();  //тело
         putLinePtr(uk2);
-        IntPopParamFromStack(n, k);        //     param
-        *znach = IntGetFunctionReturn(n);  // znach func
+        IntPopParamFromStack(funNode, k);        //     param
+        *znach = IntGetFunctionReturn(funNode);  // znach func
 
         printf("\n function call with result = %d\n", *znach);
 

@@ -24,7 +24,7 @@ void getData(char *name) {
     printf("Error: %s not a falid file.", name);
     fflush(stdout);
     exit(1);
-  };
+  }
   fread(sourceText, sizeof(char), MAXTEXT - 2, f);
 
   fclose(f);

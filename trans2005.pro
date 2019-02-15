@@ -19,8 +19,7 @@ SOURCES += \
     interpret.cpp \
     scaner.cpp \
     semantic.cpp \
-    TransMain.cpp \
-    tree.cpp
+    TransMain.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -30,7 +29,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     interpret.h \
     semantic.h \
-    tree.h \
     scaner.h \
     diagram.h \
     defs.h

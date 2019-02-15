@@ -62,11 +62,11 @@ void IntStoreParamToStack(Tree *n, int k, int *znach,
     for (int i = 1; i < k; i++) t = t->lp;
   };
 
-  if (t->data.type_param == parameterVar) {
+  if (t->data.type_param == parameterVar) {  //параметр по адресу
     push2(t->data.value);
     t->data.value = addr;
   } else {
-    push(*t->data.value);
+    push(*t->data.value);  //параметр по значению
     *t->data.value = *znach;
   }
 }
@@ -77,7 +77,7 @@ Tree *IntRunFunction(
   if (tt->rp) {
     tt = tt->rp;
     while (tt->lp != NULL) tt = tt->lp;
-  };
+  }
 
   Tree *nn = getNode();
   setNode(tt);
