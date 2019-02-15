@@ -1,13 +1,14 @@
 //---------------------------------------------------------------------------
-#pragma hdrstop
 
 #include "interpret.h"
 #include "semantic.h"
-int *stack;    //указатель на массив из указателей
-int **stack2;  //указатель на массив из указателей
+int *stack;
+int **stack2;
 int sp = -1;
 int sp2 = -1;
 int d_max;
+
+//---------------------------------------------------------------------------
 
 void stackInit(int max) {
   d_max = max;
@@ -38,22 +39,28 @@ bool push2(int *i) {
   return true;
 }
 
-//занести в структуру позицию тела функции в исх. тексте
+//---------------------------------------------------------------------------
+
+//Р·Р°РЅРµСЃС‚Рё РІ СЃС‚СЂСѓРєС‚СѓСЂСѓ РїРѕР·РёС†РёСЋ С‚РµР»Р° С„СѓРЅРєС†РёРё РІ РёСЃС…. С‚РµРєСЃС‚Рµ
 void IntSaveFuncPosition(int uk, Tree *n) { n->data.pos = uk; }
 
-int IntGetPositionOfFunctionText(Tlex l)  //получить указатель на текст функции
+//---------------------------------------------------------------------------
+
+int IntGetPositionOfFunctionText(Tlex l)  //РїРѕР»СѓС‡РёС‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° С‚РµРєСЃС‚ С„СѓРЅРєС†РёРё
 {
   Tree *n;
-  //найти функцию
+  //РЅР°Р№С‚Рё С„СѓРЅРєС†РёСЋ
   Sem5CheckToFun(l, &n);
   int ret = n->data.pos;
   return ret;
 }
 
+//---------------------------------------------------------------------------
+
 void IntStoreParamToStack(Tree *n, int k, int *znach,
-                          int *&addr)  //поместить парам. в стек
+                          int *&addr)  //РїРѕРјРµСЃС‚РёС‚СЊ РїР°СЂР°Рј. РІ СЃС‚РµРє
 {
-  //для первого
+  //РґР»СЏ РїРµСЂРІРѕРіРѕ
   Tree *t = n;
   if (k == 1)
     t = t->rp;
@@ -62,17 +69,19 @@ void IntStoreParamToStack(Tree *n, int k, int *znach,
     for (int i = 1; i < k; i++) t = t->lp;
   };
 
-  if (t->data.type_param == parameterVar) {  //параметр по адресу
+  if (t->data.type_param == parameterVar) {  //РїР°СЂР°РјРµС‚СЂ РїРѕ Р°РґСЂРµСЃСѓ
     push2(t->data.value);
     t->data.value = addr;
   } else {
-    push(*t->data.value);  //параметр по значению
+    push(*t->data.value);  //РїР°СЂР°РјРµС‚СЂ РїРѕ Р·РЅР°С‡РµРЅРёСЋ
     *t->data.value = *znach;
   }
 }
 
+//---------------------------------------------------------------------------
+
 Tree *IntRunFunction(
-    Tree *n) {  //обеспечить работу функции (текущую верш. в дереве)
+    Tree *n) {  //РѕР±РµСЃРїРµС‡РёС‚СЊ СЂР°Р±РѕС‚Сѓ С„СѓРЅРєС†РёРё (С‚РµРєСѓС‰СѓСЋ РІРµСЂС€. РІ РґРµСЂРµРІРµ)
   Tree *tt = n;
   if (tt->rp) {
     tt = tt->rp;
@@ -84,7 +93,9 @@ Tree *IntRunFunction(
   return nn;
 }
 
-void IntPopParamFromStack(Tree *n, int k) {  //извлечь парам. из стека
+//---------------------------------------------------------------------------
+
+void IntPopParamFromStack(Tree *n, int k) {  //РёР·РІР»РµС‡СЊ РїР°СЂР°Рј. РёР· СЃС‚РµРєР°
   int kk = 0;
   Tree *t = n;
   if (k == 1) {
@@ -110,10 +121,14 @@ void IntPopParamFromStack(Tree *n, int k) {  //извлечь парам. из стека
   }
 }
 
-int IntGetFunctionReturn(Tree *n) {  //получить значение функции
+//---------------------------------------------------------------------------
+
+int IntGetFunctionReturn(Tree *n) {  //РїРѕР»СѓС‡РёС‚СЊ Р·РЅР°С‡РµРЅРёРµ С„СѓРЅРєС†РёРё
   int ret = *(n->data.value);
   return ret;
 }
+
+//---------------------------------------------------------------------------
 
 int IntCalcOperationResult(
     int type1, int type2, int value1, int value2,
@@ -198,8 +213,10 @@ int IntCalcOperationResult(
   return ret;
 }
 
+//---------------------------------------------------------------------------
+
 void IntAssignValueOrAddrToVar(int T1, int T2, Tlex lex, int *z,
-                               int *&addr) {  //присвоить перем. значение
+                               int *&addr) {  //РїСЂРёСЃРІРѕРёС‚СЊ РїРµСЂРµРј. Р·РЅР°С‡РµРЅРёРµ
 
   if (!isInterpretation) return;
   NodeData *myd = FindUp(lex);

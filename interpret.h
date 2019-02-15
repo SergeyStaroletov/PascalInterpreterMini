@@ -11,20 +11,20 @@ void stackInit(int max);
 int pop();
 bool push(int i);
 
-void IntSaveFuncPosition(int uk, Tree *n);  //запомнить позицию функции
-int IntGetPositionOfFunctionText(Tlex l);  //получить указатель на текст функции
+void IntSaveFuncPosition(int uk, Tree *n);  //Р·Р°РїРѕРјРЅРёС‚СЊ РїРѕР·РёС†РёСЋ С„СѓРЅРєС†РёРё
+int IntGetPositionOfFunctionText(Tlex l);  //РїРѕР»СѓС‡РёС‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° С‚РµРєСЃС‚ С„СѓРЅРєС†РёРё
 void IntStoreParamToStack(Tree *n, int k, int *znach,
-                          int *&addr);  //поместить парам. в стек
+                          int *&addr);  //РїРѕРјРµСЃС‚РёС‚СЊ РїР°СЂР°Рј. РІ СЃС‚РµРє
 Tree *IntRunFunction(
-    Tree *n);  //обеспечить работу функции (текущую верш. в дереве)
-void IntPopParamFromStack(Tree *n, int k);  //извлечь парам. из стека
-int IntGetFunctionReturn(Tree *n);  //получить значение функции
+    Tree *n);  //РѕР±РµСЃРїРµС‡РёС‚СЊ СЂР°Р±РѕС‚Сѓ С„СѓРЅРєС†РёРё (С‚РµРєСѓС‰СѓСЋ РІРµСЂС€. РІ РґРµСЂРµРІРµ)
+void IntPopParamFromStack(Tree *n, int k);  //РёР·РІР»РµС‡СЊ РїР°СЂР°Рј. РёР· СЃС‚РµРєР°
+int IntGetFunctionReturn(Tree *n);  //РїРѕР»СѓС‡РёС‚СЊ Р·РЅР°С‡РµРЅРёРµ С„СѓРЅРєС†РёРё
 
 int IntCalcOperationResult(int t1, int t2, int z1, int z2,
                            int oper);  // ret=z1(oper)z2 ;
 void IntAssignValueOrAddrToVar(
     int T1, int T2, Tlex lex, int *z,
-    int *&addr);  //присвоить перем. значение или адрес
+    int *&addr);  //РїСЂРёСЃРІРѕРёС‚СЊ РїРµСЂРµРј. Р·РЅР°С‡РµРЅРёРµ РёР»Рё Р°РґСЂРµСЃ
 
 //---------------------------------------------------------------------------
 #endif

@@ -6,20 +6,20 @@
 extern int currentPos;
 
 struct NodeData {
-  Tobj t;        //тип
-  Tlex id;       //идентефикатор
-  int pos;       //позиция в исходном тексте
-  int dataType;  //тип или тип возвр. значения
-  int *value;  //адрес в таблице - указатель на значение
+  Tobj t;        //С‚РёРї
+  Tlex id;       //РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ
+  int pos;       //РїРѕР·РёС†РёСЏ РІ РёСЃС…РѕРґРЅРѕРј С‚РµРєСЃС‚Рµ
+  int dataType;  //С‚РёРї РёР»Рё С‚РёРї РІРѕР·РІСЂ. Р·РЅР°С‡РµРЅРёСЏ
+  int *value;  //Р°РґСЂРµСЃ РІ С‚Р°Р±Р»РёС†Рµ - СѓРєР°Р·Р°С‚РµР»СЊ РЅР° Р·РЅР°С‡РµРЅРёРµ
 
   union {
-    int znach;       //значение для const
-    int param;       //число парам для func
-    int type_param;  //параметр функции - его тип(по ссылке, значению)
+    int znach;       //Р·РЅР°С‡РµРЅРёРµ РґР»СЏ const
+    int param;       //С‡РёСЃР»Рѕ РїР°СЂР°Рј РґР»СЏ func
+    int type_param;  //РїР°СЂР°РјРµС‚СЂ С„СѓРЅРєС†РёРё - РµРіРѕ С‚РёРї(РїРѕ СЃСЃС‹Р»РєРµ, Р·РЅР°С‡РµРЅРёСЋ)
   };
 };
 
-//в дереве
+//РІ РґРµСЂРµРІРµ
 struct Tree {
   NodeData data;
   Tree *p;
@@ -28,7 +28,7 @@ struct Tree {
 };
 
 NodeData *FindUp(Tlex l);
-//семантика описаний
+//СЃРµРјР°РЅС‚РёРєР° РѕРїРёСЃР°РЅРёР№
 Tree *Sem13();
 void Sem14AddIdWithoutAType(Tlex name);
 void Sem14InsertConstant(Tlex name);
@@ -40,7 +40,7 @@ Tree *Sem16AddChildFunction(Tlex l);
 void Sem17ChangeNParamFun(Tree *k);
 void Sem15ChangeUndefinedTypeFun(Tree *n, int tt);
 void Sem18(Tree *k);
-//семантика вызовов
+//СЃРµРјР°РЅС‚РёРєР° РІС‹Р·РѕРІРѕРІ
 int Sem1CheckVar(Tlex l, bool *var, int *znach, int *&address);
 int Sem2CheckNumber(Tlex l, int *znach);
 

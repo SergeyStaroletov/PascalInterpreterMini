@@ -11,7 +11,7 @@ FILE *outputFile;
 void semPrint(char *data, char *lex) {
   char *s = new char[200];
   strcpy(s, data);
-  strcat(s, " в строке %d !");
+  strcat(s, " РІ СЃС‚СЂРѕРєРµ %d !");
   // CharToOem(s, s1);
   printf(s, lex, currentPos);
   fflush(stdout);
@@ -20,7 +20,7 @@ void semPrint(char *data, char *lex) {
 }
 
 void SetLeft(NodeData new_data)
-//создать левого потомка от текущей вершины
+//СЃРѕР·РґР°С‚СЊ Р»РµРІРѕРіРѕ РїРѕС‚РѕРјРєР° РѕС‚ С‚РµРєСѓС‰РµР№ РІРµСЂС€РёРЅС‹
 {
   Tree *a;
   a = myNode;
@@ -56,15 +56,15 @@ void SetRight(NodeData new_data) {
 }
 
 NodeData *FindUpFun(Tlex l)
-//найти идентефикатор в таблице , двигаясь вверх и останавливаясь до первой
-//функции
+//РЅР°Р№С‚Рё РёРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ РІ С‚Р°Р±Р»РёС†Рµ , РґРІРёРіР°СЏСЃСЊ РІРІРµСЂС… Рё РѕСЃС‚Р°РЅР°РІР»РёРІР°СЏСЃСЊ РґРѕ РїРµСЂРІРѕР№
+//С„СѓРЅРєС†РёРё
 {
   Tree *tmp, *tp;
 
   tmp = myNode;
   while (tmp != NULL) {
     if (!strcmp(tmp->data.id, l)) {
-      //нашли
+      //РЅР°С€Р»Рё
       return &tmp->data;
       // break ;
     }
@@ -81,13 +81,13 @@ NodeData *FindUpFun(Tlex l)
 }
 
 NodeData *FindUp(Tlex l)
-//найти идентефикатор в таблице , двигаясь вверх
+//РЅР°Р№С‚Рё РёРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ РІ С‚Р°Р±Р»РёС†Рµ , РґРІРёРіР°СЏСЃСЊ РІРІРµСЂС…
 {
   Tree *tmp;
   tmp = myNode;
   while (tmp != NULL) {
     if (!strcmp(tmp->data.id, l)) {
-      //нашли
+      //РЅР°С€Р»Рё
       return &tmp->data;
       // break ;
     }
@@ -119,16 +119,16 @@ int a() {
 
 Tree *Sem13() { return myNode; }
 
-//занести в таблицу без типа
+//Р·Р°РЅРµСЃС‚Рё РІ С‚Р°Р±Р»РёС†Сѓ Р±РµР· С‚РёРїР°
 void Sem14AddIdWithoutAType(Tlex name) {
   NodeData new_data;
-  //проверить
+  //РїСЂРѕРІРµСЂРёС‚СЊ
 
   NodeData *myd = FindUpFun(name);
 
   if (myd != NULL) {
-    //уже есть !
-    semPrint("Повторный идентефикатор '%s'", name);
+    //СѓР¶Рµ РµСЃС‚СЊ !
+    semPrint("РџРѕРІС‚РѕСЂРЅС‹Р№ РёРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ '%s'", name);
   }
   new_data.t = typeVar;
   new_data.dataType = typeNone;
@@ -136,14 +136,14 @@ void Sem14AddIdWithoutAType(Tlex name) {
   SetLeft(new_data);
 }
 
-//определить семантический тип по лексическому
+//РѕРїСЂРµРґРµР»РёС‚СЊ СЃРµРјР°РЅС‚РёС‡РµСЃРєРёР№ С‚РёРї РїРѕ Р»РµРєСЃРёС‡РµСЃРєРѕРјСѓ
 int SemReturnSemTypeByLexType(int t) {
   if (t == Tint) return typeInt;
   if (t == Tbool) return typeBool;
   return typeNone;
 }
 
-//изменить тип typenone на нужный тип, поднимаясь вверх по дереву
+//РёР·РјРµРЅРёС‚СЊ С‚РёРї typenone РЅР° РЅСѓР¶РЅС‹Р№ С‚РёРї, РїРѕРґРЅРёРјР°СЏСЃСЊ РІРІРµСЂС… РїРѕ РґРµСЂРµРІСѓ
 void Sem15ChangeToType(Tree *n, int tt) {
   //   |(n)
   // |
@@ -151,23 +151,23 @@ void Sem15ChangeToType(Tree *n, int tt) {
 
   while (tmp != n) {
     tmp->data.dataType = tt;
-    //выделить память
+    //РІС‹РґРµР»РёС‚СЊ РїР°РјСЏС‚СЊ
     tmp->data.value = new int;
-    //и присвоить значение
+    //Рё РїСЂРёСЃРІРѕРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ
     *tmp->data.value = 0;
     tmp = tmp->p;
   }
 }
 
-//занести в таблицу константу без типа
+//Р·Р°РЅРµСЃС‚Рё РІ С‚Р°Р±Р»РёС†Сѓ РєРѕРЅСЃС‚Р°РЅС‚Сѓ Р±РµР· С‚РёРїР°
 void Sem14InsertConstant(Tlex name) {
   NodeData new_data;
-  //проверить
+  //РїСЂРѕРІРµСЂРёС‚СЊ
   // data *myd = FindUp(name) ;
   NodeData *myd = FindUpFun(name);
   if (myd != NULL) {
-    //уже есть !
-    semPrint("Повторный идентефикатор '%s'", name);
+    //СѓР¶Рµ РµСЃС‚СЊ !
+    semPrint("РџРѕРІС‚РѕСЂРЅС‹Р№ РёРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ '%s'", name);
   }
   new_data.t = typeConst;
   new_data.dataType = typeNone;
@@ -178,7 +178,7 @@ void Sem14InsertConstant(Tlex name) {
 void Sem15c(Tlex l, bool flag_minus) {
   int z;
   int tip;
-  //изменить и тип и значение
+  //РёР·РјРµРЅРёС‚СЊ Рё С‚РёРї Рё Р·РЅР°С‡РµРЅРёРµ
   // tree *tmp=mynode ;
 
   if (l[0] == 'T' || l[0] == 't') {  // bool value
@@ -188,7 +188,7 @@ void Sem15c(Tlex l, bool flag_minus) {
     z = 0;
     tip = typeBool;
   } else {
-    //пытаемся преобразовать
+    //РїС‹С‚Р°РµРјСЃСЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°С‚СЊ
     char s[40];
     strcpy(s, "0000000000000000000");
     int ofs = 19 - strlen(l);
@@ -196,7 +196,7 @@ void Sem15c(Tlex l, bool flag_minus) {
       s[ofs + j] = l[j];
     }
     if (strcmp(s, "0000000002147483647") > 0) {
-      semPrint("Слишком большая числовая константа - %s", l);
+      semPrint("РЎР»РёС€РєРѕРј Р±РѕР»СЊС€Р°СЏ С‡РёСЃР»РѕРІР°СЏ РєРѕРЅСЃС‚Р°РЅС‚Р° - %s", l);
       tip = typeNone;
     }
     z = atoi(l);
@@ -204,24 +204,24 @@ void Sem15c(Tlex l, bool flag_minus) {
     if (flag_minus) z = -z;
     tip = typeInt;
   }
-  //теперь занести
+  //С‚РµРїРµСЂСЊ Р·Р°РЅРµСЃС‚Рё
   myNode->data.dataType = tip;
   myNode->data.znach = z;
   myNode->data.value = &(myNode->data.znach);
 }
 
-//фунции
+//С„СѓРЅС†РёРё
 Tree *Sem16AddChildFunction(Tlex l) {
-  //создать потомка - функцию
+  //СЃРѕР·РґР°С‚СЊ РїРѕС‚РѕРјРєР° - С„СѓРЅРєС†РёСЋ
   Tree *u;
   NodeData new_data;
-  //проверить
+  //РїСЂРѕРІРµСЂРёС‚СЊ
 
   NodeData *myd = FindUpFun(l);
 
   if (myd != NULL) {
-    //уже есть !
-    semPrint("Повторный идентификатор '%s'", l);
+    //СѓР¶Рµ РµСЃС‚СЊ !
+    semPrint("РџРѕРІС‚РѕСЂРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ '%s'", l);
   }
   new_data.t = typeFunc;
   new_data.dataType = typeNone;
@@ -229,8 +229,8 @@ Tree *Sem16AddChildFunction(Tlex l) {
   strcpy(new_data.id, l);
   SetLeft(new_data);
   u = myNode;
-  //занесли
-  //создать пустого правого потомка
+  //Р·Р°РЅРµСЃР»Рё
+  //СЃРѕР·РґР°С‚СЊ РїСѓСЃС‚РѕРіРѕ РїСЂР°РІРѕРіРѕ РїРѕС‚РѕРјРєР°
   new_data.t = typeNone;
   new_data.dataType = typeNone;
   strcpy(new_data.id, "");
@@ -238,19 +238,19 @@ Tree *Sem16AddChildFunction(Tlex l) {
   return u;
 }
 
-//изменить номер параметров у функции
+//РёР·РјРµРЅРёС‚СЊ РЅРѕРјРµСЂ РїР°СЂР°РјРµС‚СЂРѕРІ Сѓ С„СѓРЅРєС†РёРё
 void Sem17ChangeNParamFun(Tree *k) { k->data.param++; }
 
-//добавить параметр в функцию
+//РґРѕР±Р°РІРёС‚СЊ РїР°СЂР°РјРµС‚СЂ РІ С„СѓРЅРєС†РёСЋ
 void Sem14AddParamFun(Tlex name, bool fr, bool var) {
   NodeData new_data;
-  //проверить
+  //РїСЂРѕРІРµСЂРёС‚СЊ
 
   NodeData *myd = FindUpFun(name);
 
   if (myd != NULL) {
-    //уже есть !
-    semPrint("Повторный идентефикатор '%s'", name);
+    //СѓР¶Рµ РµСЃС‚СЊ !
+    semPrint("РџРѕРІС‚РѕСЂРЅС‹Р№ РёРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ '%s'", name);
   }
 
   new_data.t = typeParam;
@@ -262,13 +262,13 @@ void Sem14AddParamFun(Tlex name, bool fr, bool var) {
 
   strcpy(new_data.id, name);
 
-  if (fr == true) {  //первый вызов - добавить вправо
+  if (fr == true) {  //РїРµСЂРІС‹Р№ РІС‹Р·РѕРІ - РґРѕР±Р°РІРёС‚СЊ РІРїСЂР°РІРѕ
     memcpy(&myNode->data, &new_data, sizeof(NodeData));
-  } else  //иначе - влево
+  } else  //РёРЅР°С‡Рµ - РІР»РµРІРѕ
     SetLeft(new_data);
 }
 
-//изменить неопред. тип функции
+//РёР·РјРµРЅРёС‚СЊ РЅРµРѕРїСЂРµРґ. С‚РёРї С„СѓРЅРєС†РёРё
 void Sem15ChangeUndefinedTypeFun(Tree *n, int tt) {
   n->data.dataType = tt;
   n->data.value = new int;
@@ -279,18 +279,18 @@ void Sem18(Tree *k) { myNode = k; }
 
 int Sem1CheckVar(Tlex l, bool *var, int *znach, int *&address) {
   NodeData *myd = FindUp(l);
-  if (myd == NULL)  //не найден
+  if (myd == NULL)  //РЅРµ РЅР°Р№РґРµРЅ
   {
-    semPrint("Идентефикатор %s не описан, ", l);
+    semPrint("РРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ %s РЅРµ РѕРїРёСЃР°РЅ, ", l);
     return typeNone;
   }
-  if (myd->t == typeFunc) semPrint("Неверный идентификатор '%s'", l);
+  if (myd->t == typeFunc) semPrint("РќРµРІРµСЂРЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ '%s'", l);
   if (myd->t == typeVar || myd->t == typeParam)
     *var = true;
   else
     *var = false;
 
-  //значение переменной
+  //Р·РЅР°С‡РµРЅРёРµ РїРµСЂРµРјРµРЅРЅРѕР№
   *znach = *myd->value;
   address = myd->value;
 
@@ -313,7 +313,7 @@ int Sem2CheckNumber(Tlex l, int *znach) {
     s[ofs + j] = l[j];
   }
   if (strcmp(s, "0000000002147483647") > 0) {
-    semPrint("Слишком большая числовая константа - %s", l);
+    semPrint("РЎР»РёС€РєРѕРј Р±РѕР»СЊС€Р°СЏ С‡РёСЃР»РѕРІР°СЏ РєРѕРЅСЃС‚Р°РЅС‚Р° - %s", l);
     *znach = 0;
     return typeNone;
   }
@@ -337,29 +337,29 @@ int Sem2CheckNumber(Tlex l, int *znach) {
   return typeInt;
 }
 
-//проверить на функцию
+//РїСЂРѕРІРµСЂРёС‚СЊ РЅР° С„СѓРЅРєС†РёСЋ
 int Sem5CheckToFun(Tlex l, Tree **n) {
   NodeData *myd = FindUp(l);
-  if (myd == NULL)  //не найден
+  if (myd == NULL)  //РЅРµ РЅР°Р№РґРµРЅ
   {
-    semPrint("Идентефикатор '%s' не описан, ", l);
+    semPrint("РРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ '%s' РЅРµ РѕРїРёСЃР°РЅ, ", l);
     return typeNone;
   }
 
   if (myd->t != typeFunc) {
-    semPrint("Идентефикатор '%s' не является именем функции, ", l);
+    semPrint("РРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ '%s' РЅРµ СЏРІР»СЏРµС‚СЃСЏ РёРјРµРЅРµРј С„СѓРЅРєС†РёРё, ", l);
     return typeNone;
   }
 
   Tree *tmp;
   *n = NULL;
 
-  //найти n
+  //РЅР°Р№С‚Рё n
 
   tmp = myNode;
   while (tmp != NULL) {
     if (!strcmp(tmp->data.id, l)) {
-      //нашли
+      //РЅР°С€Р»Рё
       *n = tmp;
       break;
     };
@@ -369,28 +369,28 @@ int Sem5CheckToFun(Tlex l, Tree **n) {
   return myd->dataType;
 }
 
-//проверить тип параметра с номером k в функции * n на тип t
+//РїСЂРѕРІРµСЂРёС‚СЊ С‚РёРї РїР°СЂР°РјРµС‚СЂР° СЃ РЅРѕРјРµСЂРѕРј k РІ С„СѓРЅРєС†РёРё * n РЅР° С‚РёРї t
 void Sem6CheckKthParamFunc(int t, Tree *n, int k, bool var) {
   int j;
   Tree *tmp = n;
   if (k > tmp->data.param)
-    semPrint("Превышено число параметров у функции '%s'", tmp->data.id);
+    semPrint("РџСЂРµРІС‹С€РµРЅРѕ С‡РёСЃР»Рѕ РїР°СЂР°РјРµС‚СЂРѕРІ Сѓ С„СѓРЅРєС†РёРё '%s'", tmp->data.id);
 
-  tmp = tmp->rp;  //первый параметр
+  tmp = tmp->rp;  //РїРµСЂРІС‹Р№ РїР°СЂР°РјРµС‚СЂ
   for (j = 2; j <= k; j++) tmp = tmp->lp;
 
-  //проверить тип
+  //РїСЂРѕРІРµСЂРёС‚СЊ С‚РёРї
   if (t != tmp->data.dataType)
-    semPrint("Неверный тип параметра '%s'", tmp->data.id);
+    semPrint("РќРµРІРµСЂРЅС‹Р№ С‚РёРї РїР°СЂР°РјРµС‚СЂР° '%s'", tmp->data.id);
 
   if (tmp->data.type_param == parameterVar)
     if (!var)
-      semPrint("Параметр var '%s' не может быть выражением", tmp->data.id);
+      semPrint("РџР°СЂР°РјРµС‚СЂ var '%s' РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РІС‹СЂР°Р¶РµРЅРёРµРј", tmp->data.id);
 }
 
 void Sem7CheckFunParamCount(Tree *n, int k) {
   if (n->data.param != k)
-    semPrint("Не хватает параметров у функции '%s'", n->data.id);
+    semPrint("РќРµ С…РІР°С‚Р°РµС‚ РїР°СЂР°РјРµС‚СЂРѕРІ Сѓ С„СѓРЅРєС†РёРё '%s'", n->data.id);
 }
 
 int Sem71ReturnType(Tree *n) { return n->data.dataType; }
@@ -406,7 +406,7 @@ int Sem3CheckTwoTypesApplicable(int t1, int t2, int oper) {
       if (t1 == typeNone && t2 == typeNone) return typeNone;
       if (t1 == typeNone && t2 == typeInt) return typeNone;
       if (t1 == typeInt && t2 == typeNone) return typeNone;
-      semPrint("Несовпадение типов%s", "");
+      semPrint("РќРµСЃРѕРІРїР°РґРµРЅРёРµ С‚РёРїРѕРІ%s", "");
       return typeNone;
       break;
     };
@@ -420,7 +420,7 @@ int Sem3CheckTwoTypesApplicable(int t1, int t2, int oper) {
       if (t1 == typeNone && t2 == typeInt) return typeNone;
       if (t1 == typeBool && t2 == typeNone) return typeNone;
       if (t1 == typeNone && t2 == typeBool) return typeNone;
-      semPrint("Несовпадение типов%s", "");
+      semPrint("РќРµСЃРѕРІРїР°РґРµРЅРёРµ С‚РёРїРѕРІ%s", "");
       return typeNone;
     };
     case Tbolee:
@@ -436,7 +436,7 @@ int Sem3CheckTwoTypesApplicable(int t1, int t2, int oper) {
       if (t1 == typeNone && t2 == typeInt) return typeNone;
       if (t1 == typeBool && t2 == typeNone) return typeNone;
       if (t1 == typeNone && t2 == typeBool) return typeNone;
-      semPrint("Несовпадение типов%s", "");
+      semPrint("РќРµСЃРѕРІРїР°РґРµРЅРёРµ С‚РёРїРѕРІ%s", "");
     }
   }
 }
@@ -445,7 +445,7 @@ int Sem31CheckTypeUnary(int t1, int oper) {
   if (oper == Tplus || oper == Tminus) {
     if (t1 == typeInt) return typeInt;
     if (t1 == typeNone) return typeNone;
-    semPrint("Несовпадение типов в унарной операции%s", "");
+    semPrint("РќРµСЃРѕРІРїР°РґРµРЅРёРµ С‚РёРїРѕРІ РІ СѓРЅР°СЂРЅРѕР№ РѕРїРµСЂР°С†РёРё%s", "");
     return typeNone;
   }
 
@@ -453,8 +453,8 @@ int Sem31CheckTypeUnary(int t1, int oper) {
     if (t1 == typeInt) return typeInt;
     if (t1 == typeBool) return typeBool;
     if (t1 == typeNone) return typeBool;
-    semPrint("Несовпадение типов в унарной операции%s", "");
-    return typeNone;  //никогда не вып.
+    semPrint("РќРµСЃРѕРІРїР°РґРµРЅРёРµ С‚РёРїРѕРІ РІ СѓРЅР°СЂРЅРѕР№ РѕРїРµСЂР°С†РёРё%s", "");
+    return typeNone;  //РЅРёРєРѕРіРґР° РЅРµ РІС‹Рї.
   }
   return t1;
 }
@@ -478,17 +478,17 @@ void _printtree(Tree *t) {
 
 int Sem9CheckIdAndReturnType(Tlex l) {
   NodeData *myd = FindUp(l);
-  if (myd == NULL)  //не найден
+  if (myd == NULL)  //РЅРµ РЅР°Р№РґРµРЅ
   {
-    semPrint("Идентификатор '%s' не описан, ", l);
+    semPrint("РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ '%s' РЅРµ РѕРїРёСЃР°РЅ, ", l);
     return typeNone;
   }
 
   if (myd->t != typeVar && myd->t != typeFunc && myd->t != typeParam) {
-    semPrint("Идентификатор '%s' не является именем переменной", l);
+    semPrint("РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ '%s' РЅРµ СЏРІР»СЏРµС‚СЃСЏ РёРјРµРЅРµРј РїРµСЂРµРјРµРЅРЅРѕР№", l);
     return typeNone;
   }
-  //поиск функции
+  //РїРѕРёСЃРє С„СѓРЅРєС†РёРё
 
   if (myd->t == typeFunc) {
     Tree *tmp, *tp;
@@ -501,11 +501,11 @@ int Sem9CheckIdAndReturnType(Tlex l) {
         if (tmp->rp != NULL)
           if (tp == tmp->rp) {
             if (!strcmp(tmp->data.id, l)) {
-              //нашли
+              //РЅР°С€Р»Рё
               // return &tmp->data ;
               break;
             } else {
-              semPrint("Неверный оператор возврата значения '%s'", l);
+              semPrint("РќРµРІРµСЂРЅС‹Р№ РѕРїРµСЂР°С‚РѕСЂ РІРѕР·РІСЂР°С‚Р° Р·РЅР°С‡РµРЅРёСЏ '%s'", l);
               break;
             }
           }
@@ -515,11 +515,11 @@ int Sem9CheckIdAndReturnType(Tlex l) {
 }
 
 void Sem91CheckAssignmentTypes(int T1, int T2) {
-  if (T1 != T2) semPrint("Типы данных при присваивании должны совпадать%s", "");
+  if (T1 != T2) semPrint("РўРёРїС‹ РґР°РЅРЅС‹С… РїСЂРё РїСЂРёСЃРІР°РёРІР°РЅРёРё РґРѕР»Р¶РЅС‹ СЃРѕРІРїР°РґР°С‚СЊ%s", "");
 }
 
 void Sem8CheckTypeWhile(int t) {
-  if (t != typeBool) semPrint("Для while нужно выражение типа boolean%s", "");
+  if (t != typeBool) semPrint("Р”Р»СЏ while РЅСѓР¶РЅРѕ РІС‹СЂР°Р¶РµРЅРёРµ С‚РёРїР° boolean%s", "");
 }
 
 void printTree() {

@@ -57,7 +57,7 @@ int scanerNextToken(Tlex l) {
 
 start:
   iscomment = false;
-  //пропуск незначащих символов
+  //РїСЂРѕРїСѓСЃРє РЅРµР·РЅР°С‡Р°С‰РёС… СЃРёРјРІРѕР»РѕРІ
   while (sourceText[posPointer] == ' ' || sourceText[posPointer] == '\n' ||
          sourceText[posPointer] == '\r' || sourceText[posPointer] == 9) {
     if (sourceText[posPointer] == '\n') currentPos++;
@@ -65,7 +65,7 @@ start:
     if (sourceText[posPointer] == '\0') return -1;
   }
 
-  //пропуск комментариев
+  //РїСЂРѕРїСѓСЃРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ
 
 k0:
   if (sourceText[posPointer] == '{') {
@@ -98,7 +98,7 @@ k2:
     posPointer++;
     goto k3;
   } else {
-    //символ ( , а потом нет * - это не коментарий
+    //СЃРёРјРІРѕР» ( , Р° РїРѕС‚РѕРј РЅРµС‚ * - СЌС‚Рѕ РЅРµ РєРѕРјРµРЅС‚Р°СЂРёР№
     posPointer--;
     goto k_fin;
   }
@@ -129,9 +129,9 @@ k4:
   }
 k_fin:
   if (iscomment) goto start;
-  //разбор
+  //СЂР°Р·Р±РѕСЂ
 
-  //сначала эти как их  идентицфикаторы
+  //СЃРЅР°С‡Р°Р»Р° СЌС‚Рё РєР°Рє РёС…  РёРґРµРЅС‚РёС†С„РёРєР°С‚РѕСЂС‹
 
 id_0:
   if (sourceText[posPointer] == 0) return -1;
@@ -143,7 +143,7 @@ id_0:
       if (i < MAXLEX - 1)
         goto id_1;
       else {
-        //слишком длинный
+        //СЃР»РёС€РєРѕРј РґР»РёРЅРЅС‹Р№
         // printerror(l) ; return Tnone ;
         while (isalnum(sourceText[posPointer]) || sourceText[posPointer] == '_')
           posPointer++;
@@ -151,16 +151,16 @@ id_0:
         return Tid;
       }
     } else {
-      //закончить идент
+      //Р·Р°РєРѕРЅС‡РёС‚СЊ РёРґРµРЅС‚
 
-      //проверить на ключевое слово
+      //РїСЂРѕРІРµСЂРёС‚СЊ РЅР° РєР»СЋС‡РµРІРѕРµ СЃР»РѕРІРѕ
       for (int kl = 0; kl < 17; kl++)
         if (!strcmp(sign[kl], l)) return tip[kl];
 
       return Tid;
     }
   }
-//цифра
+//С†РёС„СЂР°
 num_0:
   if ((isalnum(sourceText[posPointer])) && (!isalpha(sourceText[posPointer]))) {
     l[i++] = sourceText[posPointer++];
@@ -170,18 +170,18 @@ num_0:
       l[i++] = sourceText[posPointer++];
       if (i < MAXLEX - 1)
         goto num_1;
-      else {  //длинная цифра
+      else {  //РґР»РёРЅРЅР°СЏ С†РёС„СЂР°
         while ((isalnum(sourceText[posPointer])) &&
                (!isalpha(sourceText[posPointer])))
           posPointer++;
         return Tnumber;
       };
     } else {
-      //вернуть цифру
+      //РІРµСЂРЅСѓС‚СЊ С†РёС„СЂСѓ
       return Tnumber;
     }
   }
-  //присвоить и двоеточие
+  //РїСЂРёСЃРІРѕРёС‚СЊ Рё РґРІРѕРµС‚РѕС‡РёРµ
   if (sourceText[posPointer] == ':') {
     l[i++] = sourceText[posPointer++];
     if (sourceText[posPointer] == '=') {
@@ -191,12 +191,12 @@ num_0:
       return Tdv;
     }
   }
-  //точка с запятой
+  //С‚РѕС‡РєР° СЃ Р·Р°РїСЏС‚РѕР№
   if (sourceText[posPointer] == ';') {
     l[i++] = sourceText[posPointer++];
     return Ttz;
   }
-  //двоеточие
+  //РґРІРѕРµС‚РѕС‡РёРµ
   if (sourceText[posPointer] == ':') {
     l[i++] = sourceText[posPointer++];
     return Tdv;
@@ -221,30 +221,30 @@ num_0:
     l[i++] = sourceText[posPointer++];
     return Tminus;
   }
-  //умножить
+  //СѓРјРЅРѕР¶РёС‚СЊ
   if (sourceText[posPointer] == '*') {
     l[i++] = sourceText[posPointer++];
     return Tmult;
   }
 
-  //точка
+  //С‚РѕС‡РєР°
   if (sourceText[posPointer] == '.') {
     l[i++] = sourceText[posPointer++];
     return Tpoint;
   }
-  //равно
+  //СЂР°РІРЅРѕ
   if (sourceText[posPointer] == '=') {
     l[i++] = sourceText[posPointer++];
     return Tequ;
   }
 
-  //запятая
+  //Р·Р°РїСЏС‚Р°СЏ
   if (sourceText[posPointer] == ',') {
     l[i++] = sourceText[posPointer++];
     return Tpause;
   }
 
-  //Меньше и меньше или равно или неравно
+  //РњРµРЅСЊС€Рµ Рё РјРµРЅСЊС€Рµ РёР»Рё СЂР°РІРЅРѕ РёР»Рё РЅРµСЂР°РІРЅРѕ
   if (sourceText[posPointer] == '<') {
     l[i++] = sourceText[posPointer++];
     if (sourceText[posPointer] == '=') {
@@ -257,7 +257,7 @@ num_0:
 
       return Tmenee;
   }
-  //Больше и больше или равно
+  //Р‘РѕР»СЊС€Рµ Рё Р±РѕР»СЊС€Рµ РёР»Рё СЂР°РІРЅРѕ
   if (sourceText[posPointer] == '>') {
     l[i++] = sourceText[posPointer++];
     if (sourceText[posPointer] == '=') {
@@ -266,9 +266,9 @@ num_0:
     } else
       return Tbolee;
   }
-  //конец файла
+  //РєРѕРЅРµС† С„Р°Р№Р»Р°
   if (sourceText[posPointer] == 0) return -1;
-  //ничто
+  //РЅРёС‡С‚Рѕ
   l[i++] = sourceText[posPointer++];
   printerror(l);
   return 0;

@@ -8,6 +8,8 @@
 int currentPos = 0;
 char isInterpretation;
 
+//---------------------------------------------------------------------------
+
 void syntax() {
   currentPos = 1;
   isInterpretation = 1;
@@ -15,19 +17,21 @@ void syntax() {
   S();
 }
 
+//---------------------------------------------------------------------------
+
 void printBug(char *data, char *lex) {
   char *s = new char[200];
 
   if (!strcmp(lex, "")) {
-    strcpy(s, "Ошибка ! Ожидалось : '");
+    strcpy(s, "РћС€РёР±РєР° ! РћР¶РёРґР°Р»РѕСЃСЊ : '");
     strcat(s, data);
-    strcat(s, "' в строке ");
+    strcat(s, "' РІ СЃС‚СЂРѕРєРµ ");
   } else {
-    strcpy(s, "Ошибка ! Ожидалось : '");
+    strcpy(s, "РћС€РёР±РєР° ! РћР¶РёРґР°Р»РѕСЃСЊ : '");
     strcat(s, data);
-    strcat(s, "', найдено : '");
+    strcat(s, "', РЅР°Р№РґРµРЅРѕ : '");
     strcat(s, lex);
-    strcat(s, "' в строке ");
+    strcat(s, "' РІ СЃС‚СЂРѕРєРµ ");
   }
 
   printf("%s %d\n", s, currentPos);
@@ -38,12 +42,14 @@ void printBug(char *data, char *lex) {
   exit(1);
 }
 
+//---------------------------------------------------------------------------
+
 int readln() {
   int ret = 0;
   Tlex l;
   int t;
   t = scanerNextToken(l);
-  if (t != Tzs) printBug("закрывающая скобка оператора readln()", l);
+  if (t != Tzs) printBug("Р·Р°РєСЂС‹РІР°СЋС‰Р°СЏ СЃРєРѕР±РєР° РѕРїРµСЂР°С‚РѕСЂР° readln()", l);
 
   if (isInterpretation) {
     fflush(stdin);
@@ -52,12 +58,14 @@ int readln() {
   return ret;
 }
 
+//---------------------------------------------------------------------------
+
 int write(bool ln) {
   int t;
   Tlex l;
   Tlex l1;
   char vs[255];
-  bool one = true;  //только один оператор - переменная
+  bool one = true;  //С‚РѕР»СЊРєРѕ РѕРґРёРЅ РѕРїРµСЂР°С‚РѕСЂ - РїРµСЂРµРјРµРЅРЅР°СЏ
   bool isOneVar = false;
   strcpy(vs, "");
 
@@ -75,8 +83,8 @@ int write(bool ln) {
   }
 
   if (isInterpretation) {
-    if (isOneVar) {  //выводимый оператор-одна переменная
-      //найти её значение в дереве
+    if (isOneVar) {  //РІС‹РІРѕРґРёРјС‹Р№ РѕРїРµСЂР°С‚РѕСЂ-РѕРґРЅР° РїРµСЂРµРјРµРЅРЅР°СЏ
+      //РЅР°Р№С‚Рё РµС‘ Р·РЅР°С‡РµРЅРёРµ РІ РґРµСЂРµРІРµ
       int zn;
       bool aaa;
       int *a;
@@ -97,6 +105,8 @@ int write(bool ln) {
   return 0;
 }
 
+//---------------------------------------------------------------------------
+
 void S() {
   O();
   N();
@@ -110,6 +120,8 @@ void S() {
   if (t != Teof) printf("Warning: text after '.' !\n");
   fflush(stdout);
 }
+
+//---------------------------------------------------------------------------
 
 void O() {
   char localInterpretation = isInterpretation;
@@ -130,6 +142,8 @@ void O() {
   isInterpretation = localInterpretation;
 }
 
+//---------------------------------------------------------------------------
+
 void A() {
   Tlex l;
   int t;
@@ -142,11 +156,11 @@ void A() {
   else if (t == Tconst)
     G();
   else
-      //функция
+      //С„СѓРЅРєС†РёСЏ
       if (t == Tfun) {
     t = scanerNextToken(l);
-    if (t != Tid) printBug("идентификатор", l);
-    //занести функцию с пустым типом
+    if (t != Tid) printBug("РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ", l);
+    //Р·Р°РЅРµСЃС‚Рё С„СѓРЅРєС†РёСЋ СЃ РїСѓСЃС‚С‹Рј С‚РёРїРѕРј
     k = Sem16AddChildFunction(l);
 
     t = scanerNextToken(l);
@@ -166,7 +180,7 @@ void A() {
       else if (tk == Tid) {
         putLinePtr(uk1k);
       } else
-        printBug("идентификатор|var", lk);
+        printBug("РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ|var", lk);
 
       Tree *n = Sem13();
 
@@ -176,12 +190,12 @@ void A() {
 
       do {
         t1k = scanerNextToken(l1k);
-        if (t1k != Tid) printBug("идентефикатор", l1k);
-        //добавить пустой id
+        if (t1k != Tid) printBug("РёРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ", l1k);
+        //РґРѕР±Р°РІРёС‚СЊ РїСѓСЃС‚РѕР№ id
         Sem14AddParamFun(l1k, fr, is_var);
         if (fr) n = n->p;
         fr = false;
-        Sem17ChangeNParamFun(k);  //увеличили число параметров
+        Sem17ChangeNParamFun(k);  //СѓРІРµР»РёС‡РёР»Рё С‡РёСЃР»Рѕ РїР°СЂР°РјРµС‚СЂРѕРІ
         uk11k = getLinePtr();
         t1k = scanerNextToken(l1k);
       } while (t1k == Tpause);
@@ -204,8 +218,8 @@ void A() {
     t = scanerNextToken(l);
     if (t != Tdv) printBug(":", l);
     t = scanerNextToken(l);
-    if (t != Tint && t != Tbool) printBug("имя типа", l);
-    //завершить
+    if (t != Tint && t != Tbool) printBug("РёРјСЏ С‚РёРїР°", l);
+    //Р·Р°РІРµСЂС€РёС‚СЊ
     int tt = SemReturnSemTypeByLexType(t);
     Sem15ChangeUndefinedTypeFun(k, tt);
 
@@ -221,11 +235,13 @@ void A() {
     printBug("var|const|function", l);
 }
 
-//описания перемееных
+//---------------------------------------------------------------------------
+
+//РѕРїРёСЃР°РЅРёСЏ РїРµСЂРµРјРµРЅРЅС‹С…
 void B() {
   Tlex l;
   int t;
-  Tree *n;  //указатель на последний перед занесением элемент данных
+  Tree *n;  //СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РїРѕСЃР»РµРґРЅРёР№ РїРµСЂРµРґ Р·Р°РЅРµСЃРµРЅРёРµРј СЌР»РµРјРµРЅС‚ РґР°РЅРЅС‹С…
   do {
     n = Sem13();
     // L() ;
@@ -234,8 +250,8 @@ void B() {
     int uk1;
     do {
       t1 = scanerNextToken(l1);
-      if (t1 != Tid) printBug("идентефикатор", l1);
-      Sem14AddIdWithoutAType(l1);  //занести в таблицу без указания типа
+      if (t1 != Tid) printBug("РёРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ", l1);
+      Sem14AddIdWithoutAType(l1);  //Р·Р°РЅРµСЃС‚Рё РІ С‚Р°Р±Р»РёС†Сѓ Р±РµР· СѓРєР°Р·Р°РЅРёСЏ С‚РёРїР°
       uk1 = getLinePtr();
       t1 = scanerNextToken(l1);
     } while (t1 == Tpause);
@@ -258,13 +274,17 @@ void B() {
   } while (t == Tid);
 }
 
+//---------------------------------------------------------------------------
+
 void L() {
-  //было, теперь нет
+  //Р±С‹Р»Рѕ, С‚РµРїРµСЂСЊ РЅРµС‚
 }
+
+//---------------------------------------------------------------------------
 
 void K() {}
 
-//константы
+//РєРѕРЅСЃС‚Р°РЅС‚С‹
 void G() {
   Tlex l;
   int t;
@@ -275,21 +295,21 @@ void G() {
     // L() ;
 
     t = scanerNextToken(l);
-    if (t != Tid) printBug("идентефикатор константы", l);
-    //занести
+    if (t != Tid) printBug("РёРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ РєРѕРЅСЃС‚Р°РЅС‚С‹", l);
+    //Р·Р°РЅРµСЃС‚Рё
     Sem14InsertConstant(l);
     t = scanerNextToken(l);
     if (t != Tequ) printBug("=", l);
     t = scanerNextToken(l);
     if (t != Tplus && t != Tminus && t != Ttrue && t != Tfalse && t != Tnumber)
-      printBug("значение integer или boolean", l);
+      printBug("Р·РЅР°С‡РµРЅРёРµ integer РёР»Рё boolean", l);
     if (t == Tplus || t == Tminus) {
       if (t == Tminus) isMinus = true;
       t = scanerNextToken(l);
-      if (t != Tnumber) printBug("значение integer", l);
+      if (t != Tnumber) printBug("Р·РЅР°С‡РµРЅРёРµ integer", l);
     }
 
-    //занести
+    //Р·Р°РЅРµСЃС‚Рё
     Sem15c(l, isMinus);
 
     t = scanerNextToken(l);
@@ -300,6 +320,8 @@ void G() {
     putLinePtr(uk1);
   } while (t == Tid);
 }
+
+//---------------------------------------------------------------------------
 
 void N() {
   Tlex l;
@@ -319,6 +341,9 @@ void N() {
   t = scanerNextToken(l);
   if (t != Tend) printBug("end", l);
 }
+
+
+//---------------------------------------------------------------------------
 
 void C() {
   Tlex l;
@@ -349,6 +374,8 @@ void C() {
   } else
     putLinePtr(uk1);
 }
+
+//---------------------------------------------------------------------------
 
 void W() {
   int z;
@@ -382,6 +409,8 @@ while_iter:
 
   isInterpretation = localInterpretation;
 }
+
+//---------------------------------------------------------------------------
 
 bool I(int *i, int *znach, int *&address) {
   bool ret = false;
@@ -426,6 +455,8 @@ bool I(int *i, int *znach, int *&address) {
   return ret;
 }
 
+//---------------------------------------------------------------------------
+
 bool A1(int *i, int *znach, int *&address) {
   bool ret = false;
   Tlex l;
@@ -453,6 +484,8 @@ bool A1(int *i, int *znach, int *&address) {
   *znach = z1;
   return ret;
 }
+
+//---------------------------------------------------------------------------
 
 bool A2(int *i, int *znach, int *&address) {
   bool ret = false;
@@ -502,6 +535,8 @@ bool A2(int *i, int *znach, int *&address) {
   return ret;
 }
 
+//---------------------------------------------------------------------------
+
 bool A4(int *i, int *znach, int *&address) {
   bool ret;
   Tlex l1, l;
@@ -517,18 +552,18 @@ bool A4(int *i, int *znach, int *&address) {
     t = scanerNextToken(l);
     if (t != Tos) {
       putLinePtr(uk1);
-      //идентификатор
-      //проверить, переменная ли
+      //РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ
+      //РїСЂРѕРІРµСЂРёС‚СЊ, РїРµСЂРµРјРµРЅРЅР°СЏ Р»Рё
       T = Sem1CheckVar(l1, &ret, znach, address);
       *i = T;
 
       return ret;
     } else {
-      //вызов ф-ии
+      //РІС‹Р·РѕРІ С„-РёРё
       int ukaz;
-      Tree *funNode;  //указатель в дереве на функцию
+      Tree *funNode;  //СѓРєР°Р·Р°С‚РµР»СЊ РІ РґРµСЂРµРІРµ РЅР° С„СѓРЅРєС†РёСЋ
 
-      int k = 0;  //номер параметра
+      int k = 0;  //РЅРѕРјРµСЂ РїР°СЂР°РјРµС‚СЂР°
 
       if (!strcmp(l1, "readln")) {
         *znach = readln();
@@ -551,7 +586,7 @@ bool A4(int *i, int *znach, int *&address) {
       T = Sem5CheckToFun(l1, &funNode);
 
       ukaz = IntGetPositionOfFunctionText(
-          l1);  //получить указатель на текст функции
+          l1);  //РїРѕР»СѓС‡РёС‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° С‚РµРєСЃС‚ С„СѓРЅРєС†РёРё
 
       do {
         int T1;
@@ -560,7 +595,7 @@ bool A4(int *i, int *znach, int *&address) {
         k++;
         Sem6CheckKthParamFunc(T1, funNode, k, var);
         if (isInterpretation)
-          IntStoreParamToStack(funNode, k, znach, addr);  //помять стек и дерево
+          IntStoreParamToStack(funNode, k, znach, addr);  //РїРѕРјСЏС‚СЊ СЃС‚РµРє Рё РґРµСЂРµРІРѕ
         uk1 = getLinePtr();
         t = scanerNextToken(l);
       } while (t == Tpause);
@@ -576,7 +611,7 @@ bool A4(int *i, int *znach, int *&address) {
         putLinePtr(ukaz);
         // create run-time environment
         Tree *t = IntRunFunction(funNode);
-        N();  //тело
+        N();  //С‚РµР»Рѕ
         putLinePtr(uk2);
         IntPopParamFromStack(funNode, k);        //     param
         *znach = IntGetFunctionReturn(funNode);  // znach func
@@ -587,10 +622,10 @@ bool A4(int *i, int *znach, int *&address) {
       }
 
       return false;
-      //зак. вызов ф-ии
+      //Р·Р°Рє. РІС‹Р·РѕРІ С„-РёРё
     }
 
-    //зак. вызов ф-ии
+    //Р·Р°Рє. РІС‹Р·РѕРІ С„-РёРё
   } else if (t == Tnumber) {
     T = Sem2CheckNumber(l1, znach);
     *i = T;
@@ -608,7 +643,7 @@ bool A4(int *i, int *znach, int *&address) {
     *i = T;
     return ret;
   } else
-    printBug("выражение|вызов функции", l1);
+    printBug("РІС‹СЂР°Р¶РµРЅРёРµ|РІС‹Р·РѕРІ С„СѓРЅРєС†РёРё", l1);
 
   *i = typeNone;
   return false;
