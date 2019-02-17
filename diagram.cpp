@@ -18,8 +18,7 @@ void syntax() {
 }
 
 //---------------------------------------------------------------------------
-
-void printBug(char *data, char *lex) {
+[[noreturn]] void printBug(const char *data, const char *lex) {
   char *s = new char[200];
 
   if (!strcmp(lex, "")) {
@@ -88,14 +87,14 @@ int write(bool ln) {
       int zn;
       bool aaa;
       int *a;
-      int T = Sem1CheckVar(l, &aaa, &zn, a);
+      int T = SemCheckVar(l, &aaa, &zn, a);
       if (T == typeInt) printf("%d", zn);
-      if (T == typeBool)
+      if (T == typeBool) {
         if (zn == 0)
           printf("false");
         else
           printf("true");
-
+      }
     } else {
       printf("%s", vs);
     }
@@ -161,7 +160,7 @@ void A() {
     t = scanerNextToken(l);
     if (t != Tid) printBug("идентификатор", l);
     //занести функцию с пустым типом
-    k = Sem16AddChildFunction(l);
+    k = SemAddChildFunction(l);
 
     t = scanerNextToken(l);
     if (t != Tos) printBug("(", l);
@@ -192,10 +191,10 @@ void A() {
         t1k = scanerNextToken(l1k);
         if (t1k != Tid) printBug("идентефикатор", l1k);
         //добавить пустой id
-        Sem14AddParamFun(l1k, fr, is_var);
+        SemAddParamFun(l1k, fr, is_var);
         if (fr) n = n->p;
         fr = false;
-        Sem17ChangeNParamFun(k);  //увеличили число параметров
+        SemChangeNParamFun(k);  //увеличили число параметров
         uk11k = getLinePtr();
         t1k = scanerNextToken(l1k);
       } while (t1k == Tpause);
@@ -205,7 +204,7 @@ void A() {
       tk = scanerNextToken(lk);
       if (tk != Tint && tk != Tbool) printBug("integer|boolean", lk);
       int tt = SemReturnSemTypeByLexType(tk);
-      Sem15ChangeToType(n, tt);
+      SemChangeToType(n, tt);
 
       uk1k = getLinePtr();
       tk = scanerNextToken(lk);
@@ -221,14 +220,14 @@ void A() {
     if (t != Tint && t != Tbool) printBug("имя типа", l);
     //завершить
     int tt = SemReturnSemTypeByLexType(t);
-    Sem15ChangeUndefinedTypeFun(k, tt);
+    SemChangeUndefinedTypeFun(k, tt);
 
     t = scanerNextToken(l);
     if (t != Ttz) printBug(";", l);
     O();
     IntSaveFuncPosition(getLinePtr(), k);
     N();
-    Sem18(k);
+    SemSetNodeToGiven(k);
     t = scanerNextToken(l);
     if (t != Ttz) printBug(";", l);
   } else
@@ -251,7 +250,7 @@ void B() {
     do {
       t1 = scanerNextToken(l1);
       if (t1 != Tid) printBug("идентефикатор", l1);
-      Sem14AddIdWithoutAType(l1);  //занести в таблицу без указания типа
+      SemAddIdWithoutAType(l1);  //занести в таблицу без указания типа
       uk1 = getLinePtr();
       t1 = scanerNextToken(l1);
     } while (t1 == Tpause);
@@ -262,7 +261,7 @@ void B() {
     t = scanerNextToken(l);
     if (t != Tint && t != Tbool) printBug("integer|boolean", l);
     int tt = SemReturnSemTypeByLexType(t);
-    Sem15ChangeToType(n, tt);
+    SemChangeToType(n, tt);
 
     t = scanerNextToken(l);
     if (t != Ttz) printBug(";", l);
@@ -297,7 +296,7 @@ void G() {
     t = scanerNextToken(l);
     if (t != Tid) printBug("идентефикатор константы", l);
     //занести
-    Sem14InsertConstant(l);
+    SemInsertConstant(l);
     t = scanerNextToken(l);
     if (t != Tequ) printBug("=", l);
     t = scanerNextToken(l);
@@ -342,7 +341,6 @@ void N() {
   if (t != Tend) printBug("end", l);
 }
 
-
 //---------------------------------------------------------------------------
 
 void C() {
@@ -360,12 +358,12 @@ void C() {
   } else if (t == Tid) {
     strcpy(lex, l);
     int T1, T2;
-    T1 = Sem9CheckIdAndReturnType(l);
+    T1 = SemCheckIdAndReturnType(l);
     t = scanerNextToken(l);
     if (t != Tassign) printBug(":=", l);
     int *addr;
     I(&T2, &z, addr);
-    Sem91CheckAssignmentTypes(T1, T2);
+    SemCheckAssignmentTypes(T1, T2);
     if (isInterpretation) IntAssignValueOrAddrToVar(T1, T2, lex, &z, addr);
 
   } else if (t == Twhile) {
@@ -382,7 +380,7 @@ void W() {
   Tlex l;
   int t, uk1;
   int T;
-  int localInterpretation;
+  char localInterpretation;
   t = scanerNextToken(l);
   if (t != Twhile) printBug("while", l);
 
@@ -390,9 +388,9 @@ void W() {
   localInterpretation = isInterpretation;
   int *addr;
 while_iter:
-  I(&T, &z, addr);
+  I(&T, &z, addr);  //выражение
 
-  Sem8CheckTypeWhile(T);
+  SemCheckTypeWhile(T);
   t = scanerNextToken(l);
   if (t != Tdo) printBug("do", l);
 
@@ -412,7 +410,7 @@ while_iter:
 
 //---------------------------------------------------------------------------
 
-bool I(int *i, int *znach, int *&address) {
+bool I(int *i, int *result, int *&address) {
   bool ret = false;
   Tlex l;
   int t;
@@ -430,7 +428,7 @@ bool I(int *i, int *znach, int *&address) {
     flag_plus = true;
 
   ret = A1(&T1, &z1, address);
-  if (flag_plus) T1 = Sem31CheckTypeUnary(T1, t);
+  if (flag_plus) T1 = SemCheckTypeUnary(T1, t);
   if (t == Tminus) z1 *= -1;
 
   uk1 = getLinePtr();
@@ -441,7 +439,7 @@ bool I(int *i, int *znach, int *&address) {
     A1(&T2, &z2, address);
     To = T1;
 
-    T1 = Sem3CheckTwoTypesApplicable(T1, T2, t);
+    T1 = SemCheckTwoTypesApplicable(T1, T2, t);
 
     if (isInterpretation) z1 = IntCalcOperationResult(To, T2, z1, z2, t);
 
@@ -451,13 +449,13 @@ bool I(int *i, int *znach, int *&address) {
   putLinePtr(uk1);
 
   *i = T1;
-  *znach = z1;
+  *result = z1;
   return ret;
 }
 
 //---------------------------------------------------------------------------
 
-bool A1(int *i, int *znach, int *&address) {
+bool A1(int *i, int *result, int *&address) {
   bool ret = false;
   Tlex l;
   int t;
@@ -473,7 +471,7 @@ bool A1(int *i, int *znach, int *&address) {
     A2(&T2, &z2, address);
     ret = false;
     To = T1;
-    T1 = Sem3CheckTwoTypesApplicable(T1, T2, t);
+    T1 = SemCheckTwoTypesApplicable(T1, T2, t);
     if (isInterpretation) z1 = IntCalcOperationResult(To, T2, z1, z2, t);
     uk1 = getLinePtr();
     t = scanerNextToken(l);
@@ -481,13 +479,13 @@ bool A1(int *i, int *znach, int *&address) {
   putLinePtr(uk1);
 
   *i = T1;
-  *znach = z1;
+  *result = z1;
   return ret;
 }
 
 //---------------------------------------------------------------------------
 
-bool A2(int *i, int *znach, int *&address) {
+bool A2(int *i, int *result, int *&address) {
   bool ret = false;
   Tlex l;
   int t;
@@ -504,7 +502,7 @@ bool A2(int *i, int *znach, int *&address) {
 
   ret = A4(&T1, &z1, address);
   if (flag_not) {
-    T1 = Sem31CheckTypeUnary(T1, t);
+    T1 = SemCheckTypeUnary(T1, t);
     ret = false;
   };
   if (flag_not) z1 = !z1;
@@ -515,7 +513,7 @@ bool A2(int *i, int *znach, int *&address) {
     ret = false;
     A4(&T2, &z2, address);
     To = T1;
-    T1 = Sem3CheckTwoTypesApplicable(T1, T2, t);
+    T1 = SemCheckTwoTypesApplicable(T1, T2, t);
     if (isInterpretation) z1 = IntCalcOperationResult(To, T2, z1, z2, t);
     uk1 = getLinePtr();
     t = scanerNextToken(l);
@@ -523,7 +521,7 @@ bool A2(int *i, int *znach, int *&address) {
       putLinePtr(uk1);
     else
 
-      T1 = Sem31CheckTypeUnary(T1, t);
+      T1 = SemCheckTypeUnary(T1, t);
 
     uk1 = getLinePtr();
     t = scanerNextToken(l);
@@ -531,19 +529,19 @@ bool A2(int *i, int *znach, int *&address) {
   putLinePtr(uk1);
 
   *i = T1;
-  *znach = z1;
+  *result = z1;
   return ret;
 }
 
 //---------------------------------------------------------------------------
 
-bool A4(int *i, int *znach, int *&address) {
+bool A4(int *i, int *result, int *&address) {
   bool ret;
   Tlex l1, l;
   int t;
   int uk1;
   int T;
-  address = NULL;
+  address = nullptr;
 
   t = scanerNextToken(l1);
 
@@ -554,7 +552,7 @@ bool A4(int *i, int *znach, int *&address) {
       putLinePtr(uk1);
       //идентификатор
       //проверить, переменная ли
-      T = Sem1CheckVar(l1, &ret, znach, address);
+      T = SemCheckVar(l1, &ret, result, address);
       *i = T;
 
       return ret;
@@ -566,24 +564,24 @@ bool A4(int *i, int *znach, int *&address) {
       int k = 0;  //номер параметра
 
       if (!strcmp(l1, "readln")) {
-        *znach = readln();
+        *result = readln();
         *i = typeInt;
         return false;
       }
 
       if (!strcmp(l1, "write")) {
-        *znach = write(false);
+        *result = write(false);
         *i = typeInt;
         return false;
       }
 
       if (!strcmp(l1, "writeln")) {
-        *znach = write(true);
+        *result = write(true);
         *i = typeInt;
         return false;
       }
 
-      T = Sem5CheckToFun(l1, &funNode);
+      T = SemCheckToFun(l1, &funNode);
 
       ukaz = IntGetPositionOfFunctionText(
           l1);  //получить указатель на текст функции
@@ -591,19 +589,20 @@ bool A4(int *i, int *znach, int *&address) {
       do {
         int T1;
         int *addr;
-        bool var = I(&T1, znach, addr);  // T1=1 ;
+        bool var = I(&T1, result, addr);  // T1=1 ;
         k++;
-        Sem6CheckKthParamFunc(T1, funNode, k, var);
+        SemCheckKthParamFunc(T1, funNode, k, var);
         if (isInterpretation)
-          IntStoreParamToStack(funNode, k, znach, addr);  //помять стек и дерево
+          IntStoreParamToStack(funNode, k, result,
+                               addr);  //помять стек и дерево
         uk1 = getLinePtr();
         t = scanerNextToken(l);
       } while (t == Tpause);
       putLinePtr(uk1);
       t = scanerNextToken(l);
       if (t != Tzs) printBug(")", l);
-      Sem7CheckFunParamCount(funNode, k);
-      int T1 = Sem71ReturnType(funNode);
+      SemCheckFunParamCount(funNode, k);
+      int T1 = SemReturnType(funNode);
       *i = T1;
       // add-on
       if (isInterpretation) {
@@ -613,12 +612,12 @@ bool A4(int *i, int *znach, int *&address) {
         Tree *t = IntRunFunction(funNode);
         N();  //тело
         putLinePtr(uk2);
-        IntPopParamFromStack(funNode, k);        //     param
-        *znach = IntGetFunctionReturn(funNode);  // znach func
+        IntPopParamFromStack(funNode, k);         //     param
+        *result = IntGetFunctionReturn(funNode);  // result func
 
-        printf("\n function call with result = %d\n", *znach);
+        printf("\n function call with result = %d\n", *result);
 
-        Sem18(t);  // vernut'
+        SemSetNodeToGiven(t);  // vernut'
       }
 
       return false;
@@ -627,17 +626,17 @@ bool A4(int *i, int *znach, int *&address) {
 
     //зак. вызов ф-ии
   } else if (t == Tnumber) {
-    T = Sem2CheckNumber(l1, znach);
+    T = SemCheckNumber(l1, result);
     *i = T;
     return false;
 
   } else if (t == Ttrue || t == Tfalse) {
-    T = Sem2CheckNumber(l1, znach);
+    T = SemCheckNumber(l1, result);
     *i = T;
     return false;
 
   } else if (t == Tos) {
-    ret = I(&T, znach, address);
+    ret = I(&T, result, address);
     t = scanerNextToken(l);
     if (t != Tzs) printBug(")", l);
     *i = T;

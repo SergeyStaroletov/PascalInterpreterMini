@@ -56,7 +56,7 @@ void SetRight(NodeData new_data) {
 }
 
 NodeData *FindUpFun(Tlex l)
-//найти идентефикатор в таблице , двигаясь вверх и останавливаясь до первой
+//найти Идентификатор в таблице , двигаясь вверх и останавливаясь до первой
 //функции
 {
   Tree *tmp, *tp;
@@ -81,7 +81,7 @@ NodeData *FindUpFun(Tlex l)
 }
 
 NodeData *FindUp(Tlex l)
-//найти идентефикатор в таблице , двигаясь вверх
+//найти Идентификатор в таблице , двигаясь вверх
 {
   Tree *tmp;
   tmp = myNode;
@@ -120,7 +120,7 @@ int a() {
 Tree *Sem13() { return myNode; }
 
 //занести в таблицу без типа
-void Sem14AddIdWithoutAType(Tlex name) {
+void SemAddIdWithoutAType(Tlex name) {
   NodeData new_data;
   //проверить
 
@@ -128,7 +128,7 @@ void Sem14AddIdWithoutAType(Tlex name) {
 
   if (myd != NULL) {
     //уже есть !
-    semPrint("Повторный идентефикатор '%s'", name);
+    semPrint("Повторный Идентификатор '%s'", name);
   }
   new_data.t = typeVar;
   new_data.dataType = typeNone;
@@ -144,7 +144,7 @@ int SemReturnSemTypeByLexType(int t) {
 }
 
 //изменить тип typenone на нужный тип, поднимаясь вверх по дереву
-void Sem15ChangeToType(Tree *n, int tt) {
+void SemChangeToType(Tree *n, int tt) {
   //   |(n)
   // |
   Tree *tmp = myNode;
@@ -160,14 +160,14 @@ void Sem15ChangeToType(Tree *n, int tt) {
 }
 
 //занести в таблицу константу без типа
-void Sem14InsertConstant(Tlex name) {
+void SemInsertConstant(Tlex name) {
   NodeData new_data;
   //проверить
   // data *myd = FindUp(name) ;
   NodeData *myd = FindUpFun(name);
   if (myd != NULL) {
     //уже есть !
-    semPrint("Повторный идентефикатор '%s'", name);
+    semPrint("Повторный Идентификатор '%s'", name);
   }
   new_data.t = typeConst;
   new_data.dataType = typeNone;
@@ -211,7 +211,7 @@ void Sem15c(Tlex l, bool flag_minus) {
 }
 
 //фунции
-Tree *Sem16AddChildFunction(Tlex l) {
+Tree *SemAddChildFunction(Tlex l) {
   //создать потомка - функцию
   Tree *u;
   NodeData new_data;
@@ -239,10 +239,10 @@ Tree *Sem16AddChildFunction(Tlex l) {
 }
 
 //изменить номер параметров у функции
-void Sem17ChangeNParamFun(Tree *k) { k->data.param++; }
+void SemChangeNParamFun(Tree *k) { k->data.param++; }
 
 //добавить параметр в функцию
-void Sem14AddParamFun(Tlex name, bool fr, bool var) {
+void SemAddParamFun(Tlex name, bool fr, bool var) {
   NodeData new_data;
   //проверить
 
@@ -250,7 +250,7 @@ void Sem14AddParamFun(Tlex name, bool fr, bool var) {
 
   if (myd != NULL) {
     //уже есть !
-    semPrint("Повторный идентефикатор '%s'", name);
+    semPrint("Повторный Идентификатор '%s'", name);
   }
 
   new_data.t = typeParam;
@@ -269,19 +269,19 @@ void Sem14AddParamFun(Tlex name, bool fr, bool var) {
 }
 
 //изменить неопред. тип функции
-void Sem15ChangeUndefinedTypeFun(Tree *n, int tt) {
+void SemChangeUndefinedTypeFun(Tree *n, int tt) {
   n->data.dataType = tt;
   n->data.value = new int;
   *(n->data.value) = 0;
 }
 
-void Sem18(Tree *k) { myNode = k; }
+void SemSetNodeToGiven(Tree *k) { myNode = k; }
 
-int Sem1CheckVar(Tlex l, bool *var, int *znach, int *&address) {
+int SemCheckVar(Tlex l, bool *var, int *znach, int *&address) {
   NodeData *myd = FindUp(l);
   if (myd == NULL)  //не найден
   {
-    semPrint("Идентефикатор %s не описан, ", l);
+    semPrint("Идентификатор %s не описан, ", l);
     return typeNone;
   }
   if (myd->t == typeFunc) semPrint("Неверный идентификатор '%s'", l);
@@ -297,7 +297,7 @@ int Sem1CheckVar(Tlex l, bool *var, int *znach, int *&address) {
   return myd->dataType;
 }
 
-int Sem2CheckNumber(Tlex l, int *znach) {
+int SemCheckNumber(Tlex l, int *znach) {
   // 2147483647
   if (!isdigit(l[0])) {
     // true/false
@@ -320,34 +320,20 @@ int Sem2CheckNumber(Tlex l, int *znach) {
 
   *znach = atoi(l);
 
-  /*
-  AnsiString sl = "";
-  try {
-    sl.sprintf("%s", l);
-    fflush(stdout);
-    *znach = StrToInt(sl);
-  } catch (Exception &e) {
-    printf("\nShutdown with runtime error:");
-    e.Message[1] = ' ';
-    printf("%s.", e.Message.c_str());
-    fflush(stdout);
-    *znach = 0;
-  };
-  */
   return typeInt;
 }
 
 //проверить на функцию
-int Sem5CheckToFun(Tlex l, Tree **n) {
+int SemCheckToFun(Tlex l, Tree **n) {
   NodeData *myd = FindUp(l);
   if (myd == NULL)  //не найден
   {
-    semPrint("Идентефикатор '%s' не описан, ", l);
+    semPrint("Идентификатор '%s' не описан, ", l);
     return typeNone;
   }
 
   if (myd->t != typeFunc) {
-    semPrint("Идентефикатор '%s' не является именем функции, ", l);
+    semPrint("Идентификатор '%s' не является именем функции, ", l);
     return typeNone;
   }
 
@@ -370,7 +356,7 @@ int Sem5CheckToFun(Tlex l, Tree **n) {
 }
 
 //проверить тип параметра с номером k в функции * n на тип t
-void Sem6CheckKthParamFunc(int t, Tree *n, int k, bool var) {
+void SemCheckKthParamFunc(int t, Tree *n, int k, bool var) {
   int j;
   Tree *tmp = n;
   if (k > tmp->data.param)
@@ -388,14 +374,14 @@ void Sem6CheckKthParamFunc(int t, Tree *n, int k, bool var) {
       semPrint("Параметр var '%s' не может быть выражением", tmp->data.id);
 }
 
-void Sem7CheckFunParamCount(Tree *n, int k) {
+void SemCheckFunParamCount(Tree *n, int k) {
   if (n->data.param != k)
     semPrint("Не хватает параметров у функции '%s'", n->data.id);
 }
 
-int Sem71ReturnType(Tree *n) { return n->data.dataType; }
+int SemReturnType(Tree *n) { return n->data.dataType; }
 
-int Sem3CheckTwoTypesApplicable(int t1, int t2, int oper) {
+int SemCheckTwoTypesApplicable(int t1, int t2, int oper) {
   switch (oper) {
     case Tplus:
     case Tminus:
@@ -441,7 +427,7 @@ int Sem3CheckTwoTypesApplicable(int t1, int t2, int oper) {
   }
 }
 
-int Sem31CheckTypeUnary(int t1, int oper) {
+int SemCheckTypeUnary(int t1, int oper) {
   if (oper == Tplus || oper == Tminus) {
     if (t1 == typeInt) return typeInt;
     if (t1 == typeNone) return typeNone;
@@ -476,7 +462,7 @@ void _printtree(Tree *t) {
   }
 }
 
-int Sem9CheckIdAndReturnType(Tlex l) {
+int SemCheckIdAndReturnType(Tlex l) {
   NodeData *myd = FindUp(l);
   if (myd == NULL)  //не найден
   {
@@ -514,11 +500,11 @@ int Sem9CheckIdAndReturnType(Tlex l) {
   return myd->dataType;
 }
 
-void Sem91CheckAssignmentTypes(int T1, int T2) {
+void SemCheckAssignmentTypes(int T1, int T2) {
   if (T1 != T2) semPrint("Типы данных при присваивании должны совпадать%s", "");
 }
 
-void Sem8CheckTypeWhile(int t) {
+void SemCheckTypeWhile(int t) {
   if (t != typeBool) semPrint("Для while нужно выражение типа boolean%s", "");
 }
 

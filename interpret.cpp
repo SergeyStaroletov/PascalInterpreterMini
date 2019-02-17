@@ -50,7 +50,7 @@ int IntGetPositionOfFunctionText(Tlex l)  //получить указатель 
 {
   Tree *n;
   //найти функцию
-  Sem5CheckToFun(l, &n);
+  SemCheckToFun(l, &n);
   int ret = n->data.pos;
   return ret;
 }
